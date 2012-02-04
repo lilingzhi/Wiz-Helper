@@ -1,0 +1,871 @@
+﻿ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Tags add, remove & cloud</title>
+	<style type="text/css">
+		html
+		{
+			overflow-x: hide;
+			overflow-y: auto;
+		}
+		body
+		{
+			font-family: Arial, Helvetica,Sans-serif;
+			color: black;
+			background-color: #fff;
+			font-size: 9pt;
+			margin: 0px;
+			padding: 1em;
+			line-height: 1.5;
+		}
+		div
+		{
+			font-size: 1em;
+		}
+		table
+		{
+			empty-cells: show;
+			margin: 0;
+			padding: 0;
+		}
+		font
+		{
+			font-size: 1em;
+		}
+		ul
+		{
+			padding: 0 0 0 0;
+		}
+		ol
+		{
+			padding: 0 0 0 0;
+		}
+		li
+		{
+			line-height: 1.5em;
+			padding: 0 0 0 0;
+		}
+		p
+		{
+			padding: 0;
+		}
+		h1, h2, h3, h4, h5
+		{
+			padding: 0;
+		}
+		h1
+		{
+			font-size: 1.3em; /*1.3em*/
+		}
+		h2
+		{
+			font-size: 1.1em; /*1.3em*/
+		}
+		h3
+		{
+			font-size: 1em;
+			line-height: 1.1em;
+			white-space: nowrap;
+			padding: 0;
+			font-weight: normal;
+		}
+		h4, h5, table
+		{
+			font-size: 1em;
+		}
+		sup, sub
+		{
+			font-size: .7em;
+		}
+		input, select, textarea, option
+		{
+			font-family: inherit;
+			font-size: inherit;
+			margin: 0;
+			padding: 0;
+		}
+		img
+		{
+			border-style: none;
+			width: 16px;
+			height: 16px;
+		}
+		a
+		{
+			text-decoration: none;
+			color: black;
+		}
+		a:hover
+		{
+			text-decoration: none;
+			color: red;
+		}
+		hr
+		{
+			border: 0;
+			background-color: #EEE;
+			border-bottom: #c9d7f1 1px solid;
+			height: 0px;
+			width: 99.9%;
+			text-align: left;
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+	</style></head>
+<body>
+	<table>
+		<tr>
+			<td nowrap id="linkUntaged">
+				<a href='javascript:ListDocsUntaged();' style='display:inline-block; font-size:10pt; background-color:#bbbbff; text-decoration:underline; '><div id='labelUntaged'></div></a>
+			</td>
+			<td nowrap>
+				<input style='VERTICAL-ALIGN:middle ' type='checkbox' id='chkUnionset'  onclick='toggleUnionset()' /><label id="strUnionset">Union set</label> &nbsp;&nbsp;
+				<input style='VERTICAL-ALIGN:middle ' type='checkbox' id='chkCurFolder' onclick='toggleCurfolder()' /><label id="strCurfolder">In Cur. folder</label> &nbsp;&nbsp;
+				<input style='VERTICAL-ALIGN:middle ' type='checkbox' id='chkSelection' onclick='toggleSelection()' /><label id="strSelection">In Selection</label> &nbsp;&nbsp;
+			</td>
+			<td nowrap>
+				<input id='buttonDel' style='width:70px; padding-top:3px; ' type='button' value='Del' onclick='return buttonDel_onclick()'/>
+				<input id='buttonDelAll' style='width:90px; padding-top:3px; ' type='button' value='DelAll' onclick='return buttonDelAll_onclick()'/>
+			</td>
+		</tr>
+		<tr>
+			<td nowrap>
+				<input id="textFilter" type="text" style="width:100px; " onchange="FilterTags()" />
+			</td>
+			<td nowrap>
+				<input style="VERTICAL-ALIGN:middle;" type="checkbox" id="chkBeginning" onclick="return toggleBeginning()" /><label id="strFrombegin">From beginning</label> &nbsp;&nbsp;
+				<input style="VERTICAL-ALIGN:middle;" type="checkbox" id="chkByamount"  onclick="return toggleByamount()" /><label id="strByamount">By amount</label> &nbsp;&nbsp;
+				<input style="VERTICAL-ALIGN:middle;" type="checkbox" id="chkTreeview"  onclick="return toggleTreeview()" /><label id="strTreeview">Tree view</label> &nbsp;&nbsp;
+			</td>
+			<td nowrap>
+				<input id='buttonAdd' style='width:70px; padding-top:3px; ' type='button' value='Add' onclick='return buttonAdd_onclick()'/>
+				<input id='buttonCtrlSel' style='width:90px; padding-top:3px; ' type='button' value='Select' onclick='return buttonCtrlSel_onclick()'/>
+			</td>
+		</tr>
+	</table>
+	
+	<table style="border-top-style:groove; border-bottom-style:groove; border-width:thin; " width="100%">
+		<tr>
+			<td nowrap id="tdDocsCtrlSel" width="20%">
+			</td>
+			<td nowrap id="tdDocsCurOpen" width="20%">
+			</td>
+			<td nowrap id="tdStatus">
+                >info: 0 files are matching.
+			</td>
+		</tr>
+	</table>
+
+	<div id="divTags" style="width:100%; ">
+	</div>
+	
+	<script type="text/javascript">
+		//// 程序固有全局变量清单：
+		var objApp = window.external; //WizExplorerApp
+		var objWindow = objApp.Window;
+		var objDatabase = objApp.Database;
+		var objDocumentsCtrl = objWindow.DocumentsCtrl;
+		var objDocCurOpen = objWindow.CurrentDocument; //获得当前正在浏览的Wiz文档(WizDocument)
+		//
+		var pluginPath = objApp.GetPluginPathByScriptFileName("km.js"); //获得插件的路径
+		var languangeFileName = pluginPath + "plugin.ini";  //语言文件
+		objApp.LocalizeHtmlDocument(languangeFileName, document);
+		document.title = objApp.LoadStringFromFile(languangeFileName, "Tags add, remove & cloud"); //本地化文档标题
+		////
+		//// 全局变量清单：
+		var filter = null;
+		var nRows = 28; // Tile平铺模式下每列的行数
+        var colorSelCtrl1 = "#55FF55";
+        var colorSelCtrl2 = "#AAFFAA";
+        var colorSelTags = "#FFFF00";
+        var colorFiltered = "#AAAAAA"
+        var isCompact = "1";
+		var objDocsFiltered = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); //保存筛选结果（不考虑当前是否在当前文件夹）
+        ///
+		// 获取当前选中文件夹下的文件 GUID 列表
+		var objCurFolder = objApp.Window.CategoryCtrl.SelectedFolder; //当前选中的文件夹
+		var guidDocsInCurFolder = "";
+		if (objCurFolder) { addChildDocs(objCurFolder); }
+		function addChildDocs(ParentFolder) {
+			var ChildrenFolders = ParentFolder.Folders;
+			var ChildrenDocs = ParentFolder.Documents;
+			if (ChildrenDocs){
+				for (var i = 0; i < ChildrenDocs.Count; i++) {
+					guidDocsInCurFolder += ChildrenDocs.Item(i).GUID + "; ";
+				}
+			}
+			if (ChildrenFolders){
+				for (var i = 0; i < ChildrenFolders.Count; i++) {
+					addChildDocs(ChildrenFolders.Item(i));
+				}
+			}
+		}
+		////---如下部分仅用于程序初始化------------------------------------------------------------------------------------------------------------------------------------------------------------
+		//// 设置选中的文件 （文件列表中选中的文件 & 当前文件）
+		// 全局变量清单：
+		var objDocsSel = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 所有选中文件的集合（4种可能）：1.无文件；2.选中文件；3.当前文件；4.选中文件+当前文件
+		var guidDocsSel = ""; // 字符串，所有选中文件的GUID
+		var guidTagsOfDocsSel = ""; // 字符串，所有选中文件中的标签的GUID
+		//
+		var objDocsCtrlSel = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 选中文件的集合
+		var guidDocsCtrlSel = ""; // 字符串，选中文件的GUID
+		var guidTagsOfDocsCtrlSel = ""; // 字符串，选中文件中的标签的GUID
+		//
+		var objDocsCurOpen = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 当前文件的集合（仅1个文件）
+		var guidDocsCurOpen = ""; // 字符串，当前文件的GUID
+		var guidTagsOfDocsCurOpen = ""; // 字符串，当前文件中的标签的GUID
+        //
+        var metaName = "varTagscloud";
+        var metasTagscloud = objDatabase.MetasByName(metaName);
+		///
+		// 检查是否有文件选中
+		function InitialDocsSel() {
+			// 重新初始化全局变量：
+			objDocsSel = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 所有选中文件的集合（4种可能）：1.无文件；2.选中文件；3.当前文件；4.选中文件+当前文件
+			guidDocsSel = ""; // 字符串，所有选中文件的GUID
+			guidTagsOfDocsSel = ""; // 字符串，所有选中文件中的标签的GUID
+			//
+			objDocsCtrlSel = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 选中文件的集合
+			guidDocsCtrlSel = ""; // 字符串，选中文件的GUID
+			guidTagsOfDocsCtrlSel = ""; // 字符串，选中文件中的标签的GUID
+			//
+			objDocsCurOpen = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 当前文件的集合（仅1个文件）
+			guidDocsCurOpen = ""; // 字符串，当前文件的GUID
+			guidTagsOfDocsCurOpen = ""; // 字符串，当前文件中的标签的GUID
+			///
+			var htmlDocsCtrlSel = "";
+			if (objDocumentsCtrl.SelectedDocuments.Count>0) {
+				for (var j =0; j < objDocumentsCtrl.SelectedDocuments.Count; j++){
+					var objDocCtrlSelj = objDocumentsCtrl.SelectedDocuments.Item(j);
+					var objTagsOfDocCtrlSelj = objDocCtrlSelj.Tags;
+					for (var i = 0; i < objTagsOfDocCtrlSelj.Count; i++) {
+						guidTagsOfDocsCtrlSel += objTagsOfDocCtrlSelj.Item(i).GUID + "; ";
+						guidTagsOfDocsSel += objTagsOfDocCtrlSelj.Item(i).GUID + "; ";
+					}
+					objDocsCtrlSel.Add(objDocCtrlSelj);
+					guidDocsCtrlSel += objDocCtrlSelj.GUID + "; ";
+				}
+				objDocsSel.Add(objDocCtrlSelj);
+				guidDocsSel += objDocCtrlSelj.GUID + "; ";
+				htmlDocsCtrlSel += "<input type='checkbox' id='chkDocCtrlSel' onclick='setSelected()' checked />";
+				htmlDocsCtrlSel += "<a id='txtDocsCtrlSel' href=javascript:sendDocsCtrlSeltoDocsList() >";
+				htmlDocsCtrlSel += objApp.LoadStringFromFile(languangeFileName, "strSelfiles") + ": " + objDocsCtrlSel.Count + "&nbsp;&nbsp;</a>";
+			}
+			tdDocsCtrlSel.innerHTML = htmlDocsCtrlSel; // 有文件选中时显示【选中文件复选框】以及选中文件的数目
+			//
+			// 检查是否有文件打开
+			var htmlDocsCurOpen = "";
+			if (objDocCurOpen){
+				if (objDocsCtrlSel.Count>0 && chkDocCtrlSel.checked && guidDocsCtrlSel.indexOf(objDocCurOpen.GUID)!=-1){
+					htmlDocsCurOpen += "<input type='checkbox' id='chkDocCurOpen' onclick='setSelected()' checked disabled />";
+				}
+				else{
+					var objOldTags = objDocCurOpen.Tags;
+					for (var i=0; i<objOldTags.Count; i++) {
+						guidTagsOfDocsCurOpen += objOldTags.Item(i).GUID + "; ";
+					}
+					objDocsCurOpen.Add(objDocCurOpen);
+					guidDocsCurOpen = objDocCurOpen.GUID + "; ";
+					objDocsSel.Add(objDocCurOpen);
+					guidDocsSel += guidTagsOfDocsSel + objDocCurOpen.GUID;
+					if (objDocsCtrlSel.Count>0 && guidDocsCtrlSel.indexOf(objDocCurOpen.GUID)==-1){
+						htmlDocsCurOpen += "<input type='checkbox' id='chkDocCurOpen' onclick='setSelected()'/>";
+					}
+					else {
+						htmlDocsCurOpen += "<input type='checkbox' id='chkDocCurOpen' onclick='setSelected()' checked/>";
+					}
+				}
+				htmlDocsCurOpen += "<a id='txtDocCurOpen' href=javascript:sendDocsCurOpentoDocsList() >";
+				htmlDocsCurOpen += objApp.LoadStringFromFile(languangeFileName, "strCurfile") +"&nbsp;&nbsp;</a>";
+			}
+			tdDocsCurOpen.innerHTML = htmlDocsCurOpen; // 有文件打开时显示【当前文件复选框】
+			buttonDel.value = objApp.LoadStringFromFile(languangeFileName, "strBtnDel");
+			buttonDelAll.value = objApp.LoadStringFromFile(languangeFileName, "strBtnDelall");
+			buttonAdd.value = objApp.LoadStringFromFile(languangeFileName, "strBtnAdd");
+			buttonCtrlSel.value = objApp.LoadStringFromFile(languangeFileName, "strBtnCtrlsel");
+    		// 设置和读取用户变量
+            //alert(metasTagscloud);
+            if (metasTagscloud) {
+                chkUnionset.setAttribute("checked", objDatabase.Meta(metaName,"isUnionset"));
+                //alert(objDatabase.Meta(metaName,"isUnionset") + "ok");
+                chkCurFolder.setAttribute("checked", objDatabase.Meta(metaName,"isCurfolder"));
+                chkSelection.setAttribute("checked", objDatabase.Meta(metaName,"isSelection"));
+                chkBeginning.setAttribute("checked", objDatabase.Meta(metaName,"isBeginning"));
+                chkByamount.setAttribute("checked", objDatabase.Meta(metaName,"isByamount"));
+                chkTreeview.setAttribute("checked", objDatabase.Meta(metaName,"isTreeview"));
+            }
+            else {
+                chkUnionset.setAttribute("checked", "");
+                chkCurFolder.setAttribute("checked", "");
+                chkSelection.setAttribute("checked", "");
+                chkBeginning.setAttribute("checked", "");
+                chkByamount.setAttribute("checked", "");
+                chkTreeview.setAttribute("checked", "");
+                objDatabase.Meta(metaName,"isUnionset") = "";
+                objDatabase.Meta(metaName,"isCurfolder") = "";
+                objDatabase.Meta(metaName,"isSelection") = "";
+                objDatabase.Meta(metaName,"isBeginning") = "";
+                objDatabase.Meta(metaName,"isByamount") = "";
+                objDatabase.Meta(metaName,"isTreeview") = "";
+                //alert(objDatabase.Meta(metaName,"isUnionset")+ "no");
+            }
+		}
+		//
+		////---如上部分仅用于程序初始化------------------------------------------------------------------------------------------------------------------------------------------------------------
+		//
+		//
+		function setSelected(){
+			// 重新初始化【所有选中文件】全局变量：
+			objDocsSel = objApp.CreateWizObject("WizKMCore.WizDocumentCollection"); // 所有选中文件的集合（4种可能）：1.无文件；2.选中文件；3.当前文件；4.选中文件+当前文件
+			guidDocsSel = ""; // 字符串，所有选中文件的GUID
+			guidTagsOfDocsSel = ""; // 字符串，所有选中文件中的标签的GUID
+			// 切换是否包括选中文件
+			if (objDocsCtrlSel.Count>0 && chkDocCtrlSel.checked) {
+				for (var j =0; j < objDocsCtrlSel.Count; j++){
+					var objDocCtrlSelj = objDocsCtrlSel.Item(j);
+					var objTagsOfDocCtrlSelj = objDocCtrlSelj.Tags;
+					for (var i = 0; i < objTagsOfDocCtrlSelj.Count; i++) {
+						guidTagsOfDocsSel += objTagsOfDocCtrlSelj.Item(i).GUID + "; ";
+					}
+					objDocsSel.Add(objDocCtrlSelj);
+					guidDocsSel += objDocCtrlSelj.GUID + "; ";
+				}
+				if (objDocCurOpen && guidDocsCtrlSel.indexOf(objDocCurOpen.GUID)!=-1){
+					chkDocCurOpen.setAttribute("disabled", "disabled");
+					chkDocCurOpen.setAttribute("checked", "checked");
+				}
+				else if (objDocCurOpen)
+					chkDocCurOpen.setAttribute("disabled", "");
+			}
+			else if (objDocsCtrlSel.Count>0) {
+				if (objDocCurOpen)
+					chkDocCurOpen.setAttribute("disabled", "");
+			}
+			// 切换是否包括当前文件
+			if (objDocCurOpen && chkDocCurOpen.checked) {
+				if (!(objDocsCtrlSel.Count>0 && guidDocsCtrlSel.indexOf(objDocCurOpen.GUID)!=-1) || !chkDocCtrlSel.checked) {
+					var objOldTags = objDocCurOpen.Tags;
+					for (var i=0; i<objOldTags.Count; i++) {
+						guidTagsOfDocsSel += objOldTags.Item(i).GUID + "; ";
+					}
+					objDocsSel.Add(objDocCurOpen);
+					guidDocsSel += guidTagsOfDocsSel + objDocCurOpen.GUID;
+				}
+			}
+			// 如果有文件被选中或打开，则进入 addtags 模式
+			var strDisabled = "disabled";
+			if (objDocsSel.Count>0){
+				strDisabled = "";
+				tdStatus.innerHTML = "";
+			}
+			buttonDel.setAttribute("disabled", strDisabled);
+			buttonDelAll.setAttribute("disabled", strDisabled);
+			buttonAdd.setAttribute("disabled", strDisabled);
+			ResetTags();
+		}
+		//// 
+		////
+		//// 获得所有标签及其文档数量（含零文件标签）
+		// 全局变量列表：
+		var listTagsAll = []; // 数组，包含 .objTag, .guid, .count
+		var guidTagsAll = ""; // 字符串，包含所有标签的GUID: 'GUID1; GUID2; ....; GUIDn;'
+		function TagsWithFileAmount(){
+			// 每次调用函数时，重新初始化如下全局变量：
+			listTagsAll = [];
+			guidTagsAll = "";
+			// 获得含有文件的标签及其文档数量
+			var objTagsAll = objDatabase.Tags;
+			var arrayTags = objDatabase.GetAllTagsDocumentCount(0);
+			var tagsdata = (new VBArray(arrayTags)).toArray();
+			for (var i = 0; i < tagsdata.length; i++) {
+				var line = tagsdata[i];
+				var arr = line.split('=');
+				if (arr.length != 2)
+					continue;
+				var guid = arr[1];  //文档guid
+				var count = parseInt(arr[0]);   //文档数量
+				var objTag = objDatabase.TagFromGUID(guid);  //通过guid获得标签对象
+				var tagData = {};
+					tagData.tag = objTag;
+					tagData.GUID = guid;
+					tagData.count = count;
+				listTagsAll.push(tagData);
+				guidTagsAll += guid + "; ";
+			}
+			// 获得 0 文档标签
+			for (var i = 0; i < objTagsAll.Count; i++) {
+				var objTagi = objTagsAll.Item(i);
+				var guidTagi = objTagi.GUID;
+				if ( guidTagsAll.indexOf(guidTagi)==-1 ) {
+					var tagData = {};
+						tagData.tag = objTagi;
+						tagData.GUID = guidTagi;
+						tagData.count = 0;
+					listTagsAll.push(tagData);
+					guidTagsAll += guidTagi + "; ";
+				}
+			}
+		}
+		//
+		//将标签按照名称排序，方便查找
+		function CompareTag(a, b) {
+			if (chkByamount.checked){
+				var n1 = b.count;
+				var n2 = a.count;
+			}
+			else {
+				var n1 = a.tag.DisplayName.toLowerCase();
+				var n2 = b.tag.DisplayName.toLowerCase();
+			};
+			//
+			if (n1 > n2)
+				return 1;
+			else if (n1 < n2)
+				return -1;
+			return 0;
+		}
+		//
+		function GetColumn(nShow,nRows) {
+			var val = nShow / nRows + 1;
+			val = parseInt("" + val);
+			return val;
+		}
+		//
+		function getTag(tagi){
+			var tagData = {};
+			tagData.tag = tagi;
+			tagData.GUID = tagi.GUID;
+			tagData.count = 0;
+			for (var j = 0; j < listTagsAll.length; j++){
+				if (tagData.GUID == listTagsAll[j].tag.GUID){
+					tagData.count = listTagsAll[j].count;
+				}
+			}
+			return tagData;
+		}
+		// 生成带标签列表项
+		function tagToHtml(tagi,isParent) {
+			var htmlsub = "";
+			if (tagi.GUID){
+				if (-1 != guidTagsOfDocsSel.indexOf(tagi.GUID)) {
+					var nRepeat = guidTagsOfDocsSel.split(tagi.GUID+";").length-1;
+					var strRepeat = "[" + nRepeat + "]";
+					var strChecked = "checked";
+					if ( nRepeat < objDocsSel.Count)
+						var strColorBG = colorSelCtrl2;
+					else
+						var strColorBG = colorSelCtrl1;
+				}
+				else {
+					var strRepeat = "";
+					var strChecked = "";
+					var strColorBG = "#FFFFFF";
+				}
+				htmlsub += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+				htmlsub += "<a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "'); >";
+				htmlsub += tagi.tag.DisplayName + "(" + tagi.count + ")" + strRepeat + "</a></span>&nbsp;&nbsp;&nbsp;&nbsp;";
+				return htmlsub;
+			}
+		}
+		// 生成标签树
+		function addChildTags(parentTag,isRoot) {
+			var html = "";
+			var htmlChild = "";
+			var listTags = [];
+			if (isRoot==1)
+				var objTags = parentTag.RootTags;
+			else
+				var objTags = parentTag.Children;
+			var nTags = objTags.Count;
+			if (nTags>0){
+				for (var i = 0; i < nTags; i++) {
+					var objTagi = objTags.Item(i);
+					var tagData = getTag(objTagi);
+					listTags.push(tagData);
+				}
+			    if (chkByamount.checked)
+                    listTags.sort(CompareTag);
+                // 标签树堆砌模式
+                if ( isCompact=="1" ){
+    				for (var j = 0; j < nTags; j++) {
+    					var tagj = listTags[j];
+    					if ( tagj.tag.Children.Count == 0) {
+							var tagj = listTags[j];
+							html = html + tagToHtml(tagj);
+                        }
+                        else{
+                            if (isRoot==1) {
+                                htmlChild += "<div style='border-top-style:groove; border-top-width:thin; margin-top:2px; '><b>>" + tagToHtml(tagj,1) + "</b></span>";
+        						htmlChild += "<span>" + addChildTags(tagj.tag,0) + "</div>";
+                            }
+                            else {
+        						htmlChild += "<blockquote style=\"margin-top: 0px; margin-left: 30px; margin-right: 0px; margin-bottom: 0px;\" dir=\"ltr\">";
+                                htmlChild += "<div style=\"border-top-style: groove; border-top-width: thin; margin-top: 2px;\"><b>>" + tagToHtml(tagj,1) + "</b></span>";
+        						htmlChild += "<span>" + addChildTags(tagj.tag,0) + "</div></blockquote>";
+                            }
+    					}
+    				}
+    				return html + htmlChild;
+                }
+                // 普通标签树模式
+                else {
+    				for (var j = 0; j < nTags; j++) {
+    					var tagj = listTags[j];
+    					if ( tagj.tag.Children.Count == 0) {
+							var tagj = listTags[j];
+							html = html + tagToHtml(tagj);
+                        }
+                        else{
+    						var line1 = "<div style=\"border-top-style: groove; border-top-width: thin; margin-top: 2px;\"><b>>" + tagToHtml(tagj,1) + "</b></div>\r\n";
+    						var line2 = "<blockquote style=\"margin-top: 0px; margin-left: 30px; margin-right: 0px; margin-bottom: 0px;\" dir=\"ltr\"><div>" + addChildTags(tagj.tag,0) + "</div></blockquote>\r\n";
+    						htmlChild += line1 + line2;
+    					}
+    				}
+    				return html + htmlChild;
+                }
+			}
+		}
+		//
+		//生成标签云所需要的html数据
+		//
+		function ResetTags() {
+			var html = "";
+			// Directory tree style list////////////////////////////////////////////////////////////////
+			if (chkTreeview.checked){
+				html = addChildTags(objDatabase,1);
+			}
+            
+			// Tile style list/////////////////////////////////////////////////////////////////////////////
+			else{
+				listTagsAll.sort(CompareTag);
+				var nShow = 0;
+				var showlist = {};
+				for (var j = 0; j < listTagsAll.length; j++) {
+					var tagj = listTagsAll[j].tag;
+					showlist[nShow] = j;
+					nShow = nShow + 1;
+				}
+                // 堆砌模式
+                if ( isCompact=="1" ){
+                    html += "&nbsp;&nbsp;&nbsp;";
+    				for (var i = 0; i < nShow; i++) {
+    					var tag = listTagsAll[showlist[i]].tag;
+    					var count = listTagsAll[showlist[i]].count;
+    					if (-1 != guidTagsOfDocsSel.indexOf(tag.GUID)) {
+    						var nRepeat = guidTagsOfDocsSel.split(tag.GUID+";").length-1;
+    						var strRepeat = "[" + nRepeat + "]";
+    						var strChecked = "checked";
+    						if ( nRepeat < objDocsSel.Count)
+    							var strColorBG = colorSelCtrl2;
+    						else
+    							var strColorBG = colorSelCtrl1;
+    					}
+    					else {
+    						var strRepeat = "";
+    						var strChecked = "";
+    						var strColorBG = "#FFFFFF";
+    					}
+    					html += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+    					html += "<a isSelected=0 id='" + tag.GUID + "' href=javascript:ListDocsByTagGUID('" + tag.GUID + "'); >";
+                        html += tag.DisplayName + "(" + count + ")" + strRepeat + "</a></span> &nbsp;&nbsp;&nbsp;";
+    				}
+                }
+                // 多列平铺模式
+                else{
+    				var nColumns = GetColumn(nShow,nRows);
+    				html += "<table><tbody><tr>";
+    				for (var k = 0; k < nColumns; k++) {
+    					html += "<td style='white-space: nowrap'; valign=top;>";
+    					for (var j = 0; j < nRows; j++) {
+    						var i = k * nRows + j;
+    						if ( i < nShow ) {
+    							var tag = listTagsAll[showlist[i]].tag;
+    							var count = listTagsAll[showlist[i]].count;
+    							if (-1 != guidTagsOfDocsSel.indexOf(tag.GUID)) {
+    								var nRepeat = guidTagsOfDocsSel.split(tag.GUID+";").length-1;
+    								var strRepeat = " [" + nRepeat + "]";
+    								var strChecked = "checked";
+    								if ( nRepeat < objDocsSel.Count)
+    									var strColorBG = colorSelCtrl2;
+    								else
+    									var strColorBG = colorSelCtrl1;
+    							}
+    							else {
+    								var strRepeat = "";
+    								var strChecked = "";
+    								var strColorBG = "#FFFFFF";
+    							}
+    							html += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+    							html += "<a isSelected=0 id='" + tag.GUID + "' href=javascript:ListDocsByTagGUID('" + tag.GUID + "'); >";
+                                html += tag.DisplayName + " (" + count + ") " + strRepeat + "</a></span><br>";
+    						}
+    					}
+    					html += "</td>";
+    				}
+    				html += "</tr></tbody></table>";
+                }
+			};
+			divTags.innerHTML = html;
+			//
+            var color
+			var sql = "document_guid not in (select distinct document_guid from wiz_document_tag)";
+			var documents_Untaged = objDatabase.DocumentsFromSQL(sql);
+			var nUntaged = documents_Untaged.Count;
+			labelUntaged.innerHTML = objApp.LoadStringFromFile(languangeFileName, "strUntaged") + "&nbsp;(" + nUntaged + ")";
+		}
+		//
+		// 列出没有标签的文档
+		function ListDocsUntaged() {
+			var sql = "document_guid not in (select distinct document_guid from wiz_document_tag)";
+			var documents = objDatabase.DocumentsFromSQL(sql);
+			objDocsFiltered = documents;
+			ShowDocList();
+		}
+		//
+		// 点击标签，获取文档列表
+		function ListDocsByTagGUID(guid) {
+            var aTag = document.getElementById(guid);
+            if ( aTag.isSelected == "0" ){
+                aTag.isSelected = "1";
+                aTag.style.background = colorSelTags;
+            }
+            else{
+                aTag.isSelected = "0";
+                aTag.style.background = "";
+            }
+            ListDocsByTags();
+		}
+		//
+		function getTagsSelected() {
+			var objTags = objApp.CreateWizObject("WizKMCore.WizTagCollection");
+			var aTags = divTags.getElementsByTagName("a");
+			for (var i = 0; i < aTags.length; i++) {
+				var aTagi = aTags[i];
+				if (aTagi.isSelected=="1") {
+					var guid = aTagi.getAttribute("id");
+					if (guid != null) {
+						try {
+							var objTag = objDatabase.TagFromGUID(guid);
+							objTags.Add(objTag);
+						}
+						catch (err) {
+						}
+					}
+				}
+			}
+            return objTags;
+        }
+        //
+		function ListDocsByTags() {
+			var objTags = getTagsSelected();
+			if (objTags.Count == 0) {
+				var documents = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
+			}
+			else {
+				if (chkUnionset.checked){
+					var documents = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
+					var documentsGUID = "";
+					for (var j=0; j<objTags.Count; j++){
+						var objTags1 = objApp.CreateWizObject("WizKMCore.WizTagCollection");
+						objTags1.Add(objTags.Item(j));
+						var documents_CurrentTag = objDatabase.DocumentsFromTags(objTags1);
+						for (var k=0; k<documents_CurrentTag.Count; k++){
+							var documentk = documents_CurrentTag.Item(k);
+							if (documentsGUID.indexOf(documentk.GUID) == -1) {
+								documentsGUID += documentk.GUID + "; ";
+								documents.Add(documents_CurrentTag.Item(k));
+							}
+						}
+					}
+				}
+				else{
+					var documents = objDatabase.DocumentsFromTags(objTags);
+				}
+			}
+			objDocsFiltered = documents;
+			ShowDocList();
+		}
+		//
+		// 列出筛选出的文档列表
+		function ShowDocList(){
+			var listDocsPlot = objDocsFiltered;
+			// 仅在【当前文件夹】中筛选
+			if (chkCurFolder.checked && guidDocsInCurFolder!=""){
+				var listDocsInCurFolder = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
+				for ( i=0; i<listDocsPlot.Count; i++){
+					var doci = listDocsPlot.Item(i);
+					if (guidDocsInCurFolder.indexOf(doci.GUID)!=-1){
+						listDocsInCurFolder.Add(doci);
+					}
+				}
+				listDocsPlot = listDocsInCurFolder;
+			}
+			// 仅在【当前选择集】中筛选
+			if (chkSelection.checked && guidDocsCtrlSel!=""){
+				var listDocsInSelection = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
+				for ( i=0; i<listDocsPlot.Count; i++){
+					var doci = listDocsPlot.Item(i);
+					if (guidDocsCtrlSel.indexOf(doci.GUID)!=-1){
+						listDocsInSelection.Add(doci);
+					}
+				}
+				listDocsPlot = listDocsInSelection;
+			}
+			// 列出筛选结果
+			objApp.Window.DocumentsCtrl.SetDocuments(listDocsPlot);
+			tdStatus.innerHTML = ">info:&nbsp;" + listDocsPlot.Count + "&nbsp;" + objApp.LoadStringFromFile(languangeFileName, "strMatchfile");;
+			return listDocsPlot;
+		}
+		//
+		// Change list: filter; compare filter from the first character; sort according amount of files; toggle tile/tree views; //////
+		//
+        function getMetaValueTags(chkbox) {
+            if (chkbox.checked)
+                return "checked";
+            else
+                return "";
+        }
+        //
+		function toggleUnionset() {
+            objDatabase.Meta(metaName,"isUnionset") = getMetaValueTags(chkUnionset);
+            ListDocsByTags();
+        }
+        //
+		function toggleCurfolder() {
+            objDatabase.Meta(metaName,"isCurfolder") = getMetaValueTags(chkCurFolder);
+            ShowDocList();
+        }
+        //
+		function toggleSelection() {
+            objDatabase.Meta(metaName,"isSelection") = getMetaValueTags(chkSelection);
+            ShowDocList();
+        }
+		//
+		function toggleBeginning() {
+            objDatabase.Meta(metaName,"isBeginning") = getMetaValueTags(chkBeginning);
+			FilterTags(textFilter.value);
+		}
+		// sort listTagsAll according amount of files
+		function toggleByamount() {
+            objDatabase.Meta(metaName,"isByamount") = getMetaValueTags(chkByamount);
+			ResetTags();
+            FilterTags(textFilter.value);
+		}
+		// toggle tile/tree views
+		function toggleTreeview() {
+            objDatabase.Meta(metaName,"isTreeview") = getMetaValueTags(chkTreeview);
+			ResetTags();
+            FilterTags(textFilter.value);
+		}
+		// 当焦点不在过滤文本框时按键盘字母过滤
+		document.onkeyup = function() {
+            var codeKey=event.keyCode;
+            var realKey=String.fromCharCode(event.keyCode).toLowerCase();
+            var strOK = "abcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()_+-=[]{}\|:;\"\'<>,.?/ ";
+            if (document.activeElement.id != "textFilter" && strOK.indexOf(realKey) != -1)
+                FilterTags(realKey);
+            else 
+                FilterTags(textFilter.value);
+		}
+        // Filter Tags
+        function FilterTags(filter) {
+            if (filter==null)
+                filter = textFilter.value;
+            filter = filter.toLowerCase();
+            var aTags = document.getElementsByTagName("a");
+            for (var i = 0; i < aTags.length; i++) {
+                var aTagi = aTags[i];
+                if (aTagi.innerText){
+                    if (filter == "" || aTagi.innerText.toLowerCase().indexOf(filter)==0 || (!chkBeginning.checked && aTagi.innerText.toLowerCase().indexOf(filter)>0) || aTagi.id == "txtDocsCtrlSel" || aTagi.id == "txtDocCurOpen")
+                        aTagi.style.color="";
+                    else
+                        aTagi.style.color=colorFiltered;
+                }
+			}
+        }
+		//
+		// Operations on files: Add or remove listTagsAll ///////////////////////////////////////////////////////////////////////
+		//
+		// Add listTagsAll
+		function buttonAdd_onclick() {
+			var objTags = getTagsSelected();
+            if (objTags.Count > 0) {
+    			for (var i = 0; i < objDocsSel.Count; i++) {
+    				var objDocCtrlSeli = objDocsSel.Item(i);
+    				for (var j = 0; j < objTags.Count; j++) {
+    					objDocCtrlSeli.AddTag(objTags.Item(j));
+    				}
+    			}
+            }
+			reload();
+		}
+		//
+		// Remove listTagsAll
+		function buttonDel_onclick() {
+			var objTags = getTagsSelected();
+            if (objTags.Count > 0) {
+    			for (var i = 0; i < objDocsSel.Count; i++) {
+    				var objDocCtrlSeli = objDocsSel.Item(i);
+    				var objDocTags = objDocCtrlSeli.Tags;
+    				var DocTags = "";
+    				for (var j = 0; j < objDocTags.Count; j++) {
+    					DocTags += objDocTags.Item(j).GUID + ";";
+    				};
+                    
+    				for (var j = 0; j < objTags.Count; j++) {
+                        var tag = objTags.Item(j);
+     					if (-1 != DocTags.indexOf(tag.GUID))
+    						objDocCtrlSeli.RemoveTag(tag);
+    				}
+    			}
+            }
+			reload();
+		}
+		//
+		// Remove all listTagsAll
+		function buttonDelAll_onclick() {
+			//
+			for (var i = 0; i < objDocsSel.Count; i++) {
+				var objDocCtrlSeli = objDocsSel.Item(i);
+				objDocCtrlSeli.RemoveAllTags();
+			}
+			//
+			reload();
+		}
+		//
+		//
+		function buttonCtrlSel_onclick() {
+			var objDocsSelReset = ShowDocList();
+			objDocumentsCtrl.SelectedDocuments = objDocsSelReset;
+			InitialDocsSel();
+			TagsWithFileAmount();
+			setSelected();
+		}
+		//
+		////
+		// 发送选中文件到文件列表
+		function sendDocsCtrlSeltoDocsList() {
+			objApp.Window.DocumentsCtrl.SetDocuments(objDocsCtrlSel);
+		}
+		// 发送当前文件到文件列表
+		function sendDocsCurOpentoDocsList() {
+			objApp.Window.DocumentsCtrl.SetDocuments(objDocsCurOpen);
+		}
+		////
+		//
+		function reload(){
+			TagsWithFileAmount();
+			setSelected();
+			ResetTags();
+		}
+		////
+		//
+		InitialDocsSel();
+		TagsWithFileAmount();
+		setSelected();
+        ////
+	</script>
+
+</body>
+</html>

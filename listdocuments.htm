@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Document Recovery</title>
+    <style type="text/css">
+        html
+        {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        body
+        {
+            font-family: Arial, Helvetica,Sans-serif;
+            color: black;
+            background-color: #fff;
+            font-size: 9pt;
+            margin: 0px;
+            padding: 1em;
+            line-height: 1.5;
+        }
+        div
+        {
+            font-size: 1em;
+        }
+        table
+        {
+            empty-cells: show;
+            margin: 0;
+            padding: 0;
+        }
+        font
+        {
+            font-size: 1em;
+        }
+        ul
+        {
+            padding: 0 0 0 0;
+        }
+        ol
+        {
+            padding: 0 0 0 0;
+        }
+        li
+        {
+            line-height: 1.5em;
+            padding: 0 0 0 0;
+            margin-left:-2em;
+            
+        }
+        p
+        {
+            padding: 0;
+        }
+        h1, h2, h3, h4, h5
+        {
+            padding: 0;
+        }
+        h1
+        {
+            font-size: 1.3em; /*1.3em*/
+        }
+        h2
+        {
+            font-size: 1.1em; /*1.3em*/
+        }
+        h3
+        {
+            font-size: 1em;
+            line-height:1.1em;
+            white-space:nowrap;
+            padding:0;
+            font-weight:normal;
+        }
+        h4, h5, table
+        {
+            font-size: 1em;
+        }
+        sup, sub
+        {
+            font-size: .7em;
+        }
+        input, select, textarea, option
+        {
+            font-family: inherit;
+            font-size: inherit;
+            margin: 0;
+            padding: 0;
+        }
+        img
+        {
+            border-style: none;
+        }
+        a
+        {
+            outline: none;
+            color: #00c;
+        }
+        a:active
+        {
+            color: red;
+        }
+        a:visited
+        {
+            color: #551a8b;
+        }
+        hr
+        {
+            border: 0;
+            background-color: #EEE;
+            border-bottom: #c9d7f1 1px solid;
+            height: 0px;
+            width: 99.9%;
+            text-align: left;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<ul>
+    <script language="javascript">
+        /*
+        获得url的参数
+        */
+        function getQueryString(name) {
+            if (location.href.indexOf("?") == -1 || location.href.indexOf(name + '=') == -1) {
+                return '';
+            }
+            var queryString = location.href.substring(location.href.indexOf("?") + 1);
+            //
+            queryString = queryString.replace(/\%26/g, "&");
+            //
+            var parameters = queryString.split("&");
+
+            var pos, paraName, paraValue;
+            for (var i = 0; i < parameters.length; i++) {
+                pos = parameters[i].indexOf('=');
+                if (pos == -1) {
+                    continue; 
+                }
+
+                paraName = parameters[i].substring(0, pos);
+                paraValue = parameters[i].substring(pos + 1);
+
+                if (paraName == name) {
+                    return unescape(paraValue.replace(/\+/g, " "));
+                }
+            }
+            return '';
+        }; 
+    
+        var WizExplorerApp = window.external;
+        //
+        var objApp = WizExplorerApp;
+        var objDatabase = objApp.Database;
+        var objWindow = objApp.Window;
+        //
+        var text = getQueryString("text");  //正在高亮的文字
+        var type = getQueryString("type");  //文字类型，应该是keyword, tag或者author
+        if (text != null && text != "" && type != null && type != "")
+        {
+            var documents = null;
+            if (type == "tag") {
+                //通过标签获得文档
+                var objTag = null;
+                try {
+                    objTag = objDatabase.GetTagByName(text, false, "");
+                }
+                catch (err) {
+                    alert(err.message);
+                }
+                //
+                if (objTag) {
+                    var objTags = objApp.CreateWizObject("WizKMCore.WizTagCollection");
+                    objTags.Add(objTag);
+                    documents = objDatabase.DocumentsFromTags(objTags);
+                }
+            }
+            else if (type == "keyword") {
+                //通过关键字获得文档
+                try {
+                    text = text.replace(/\'/g, "''");
+                    var sql = "document_keywords like '%" + text + "%'";
+                    documents = objDatabase.DocumentsFromSQL(sql);
+                }
+                catch (err) {
+                    alert(err.message);
+                }
+            }
+            else if (type == "author") {
+                //通过作者获得文档
+                try {
+                    text = text.replace(/\'/g, "''");
+                    var sql = "document_author like '%" + text + "%'";
+                    documents = objDatabase.DocumentsFromSQL(sql);
+                }
+                catch (err) {
+                    alert(err.message);
+                }
+            }
+            //
+            if (documents != null) {
+                //列出文档
+                var htmltext = "<li><a href=\"javascript:void(0);\" onclick=\"openDocumentByGUID('%guid%');\">%title%</a></li>";
+                //
+                for (var i = 0; i < documents.Count; i++) {
+                    var doc = documents.Item(i);
+                    var line = htmltext;
+                    line = line.replace("%guid%", doc.GUID);
+                    line = line.replace("%title%", doc.Title);
+                    document.write(line);
+                }
+                //
+            }
+            if (documents == null || documents.Count == 0) {
+                //如果文档结果为空，或者没有文档，显示一个消息
+                var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+                var languangeFileName = pluginPath + "plugin.ini";
+                var str = objApp.LoadStringFromFile(languangeFileName, "strNoDocuments");
+                var strType = objApp.LoadStringFromFile(languangeFileName, type);
+                var msg = str.replace("%1", strType) + "<br /><strong>" + text + "</strong>";
+                document.write(msg);
+            }
+        }
+        //
+        function openDocumentByGUID(guid) {
+            //通过文档guid显示文档
+            var doc = null;
+            try {
+                doc = objDatabase.DocumentFromGUID(guid);
+            }
+            catch (err) {
+                alert(err.message);
+            }
+            //
+            if (!doc)
+                return;
+            //
+            //在Wiz里面打开这个文档。第二个参数表示在新窗口打开
+            objWindow.ViewDocument(doc, true);
+        }
+    </script>
+</ul>
+
+</body>
+</html>

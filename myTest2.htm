@@ -1,0 +1,60 @@
+<body>
+<table>
+	<tr>
+		<td   colspan="2"   align= "left">
+			<select   id= "fsDrivers"   onchange= "ChangeDrive(this)">
+				<option>--ÇëÑ¡ÔñÇý¶¯Æ÷-- </option> 
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td   valign= "top">
+			<select   id= "fsFolders">
+				<option>---ÇëÑ¡ÔñÄ¿Â¼--- </option> 
+			</select>
+		</td>
+		<td   valign= "top ">
+			<select   size="20"   id= "fsFiles"   style= "width:200px;">
+			</select>
+		</td>
+	</tr>
+</table>
+	<span id="info">D20110402</span><br>
+	<span id="test">test1</span>
+	<span id="test2">test2</span>
+</body>
+<script>
+
+var objApp = window.external; 
+var objDoc = objApp.window.currentdocument;
+var objUI = new ActiveXObject("WizKMControls.WizCommonUI");
+
+        var iniFile = objApp.DataStore + "wizconfig.ini";
+        //var objUI = objApp.CommonUI;
+        var ExtBrowser = ""; 
+
+
+        ExtBrowser = objUI.GetValueFromIni(iniFile, "EXTBROWSER", "ExtBrowser1");
+	ExtBrowser = objUI.GetSpecialFolder("ProgramFilesFolder");
+test.innerHTML = iniFile
+test2.innerHTML = ExtBrowser;
+
+
+        if (ExtBrowser != null  && ExtBrowser != "") {
+            objUI.RunExe(ExtBrowser, objDoc.URL, false);
+        } else {
+            objUI.SetValueToIni(iniFile, "EXTBROWSER", "ExtBrowser1", ExtBrowser);
+
+        }
+
+
+/*
+var   o   =   $( 'fsDrivers');
+for (var   i=0;   i <a.length;   i++) {
+    var   op   =   document.createElement( 'OPTION');
+    op.value   =   a[i]   +   ':';
+    op.innerText     =   a[i]   +   ':';
+    o.appendChild(op);
+}
+*/
+</script>

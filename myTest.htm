@@ -1,0 +1,132 @@
+<body>
+<table>
+	<tr>
+		<td   colspan="2"   align= "left">
+			<select   id= "fsDrivers"   onchange= "ChangeDrive(this)">
+				<option>--ÇëÑ¡ÔñÇý¶¯Æ÷-- </option> 
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td   valign= "top">
+			<select   id= "fsFolders">
+				<option>---ÇëÑ¡ÔñÄ¿Â¼--- </option> 
+			</select>
+		</td>
+		<td   valign= "top ">
+			<select   size="20"   id= "fsFiles"   style= "width:200px;">
+			</select>
+		</td>
+	</tr>
+</table>
+	<span id="info">D20110402</span><br>
+	<span id="test">test1</span>
+</body>
+<script>
+function   $(id)
+{
+    return(id.constructor   ==   String)   ?   document.getElementById(id)   :   id;
+}
+function   ChangeDrive(t)
+{
+    var   index   =   t.selectedIndex;
+    if (index   ==   0) {
+        var   temp   =   document.createElement( 'OPTION');
+        temp.innerText   =   '---ÇëÑ¡ÔñÄ¿Â¼--- ';
+        var   o   =   $( 'fsFolders');
+        o.innerHTML   =   '';
+        o.appendChild(temp);
+    } else {
+        var   tmp   =   t.options[index].value   +   '\\\\';
+        var   a   =   ShowFolderList(tmp);
+        var   o   =   $( 'fsFolders');
+        o.innerHTML   =   ' ';
+        for (var   i=0;   i <a.length;   i++) {
+            var   op   =   document.createElement( 'OPTION');
+            op.value   =   a[i];
+            op.innerText     =   a[i];
+            o.appendChild(op);
+        }
+
+    }
+
+}
+function   ShowFolderList(folderspec)
+{
+    var   fso,   f,   fc,   a;
+    fso   =   new   ActiveXObject( "Scripting.FileSystemObject");
+    f   =   fso.GetFolder(folderspec);
+    fc   =   new   Enumerator(f.SubFolders);
+    a   =   new   Array;
+    for (;   !fc.atEnd();   fc.moveNext()) {
+        a[a.length]   =   fc.item();
+    }
+    return(a);
+}
+function   getDrives()
+{
+    var   fso,   a,   n,   e,   x;
+    fso   =   new   ActiveXObject( "Scripting.FileSystemObject");
+    e   =   new   Enumerator(fso.Drives);
+    a   =   new   Array;
+    for (;   !e.atEnd();   e.moveNext()) {
+        x   =   e.item();
+        a[a.length]   =   x.DriveLetter;
+    }
+    return(a);
+}
+
+function _getFolder(pFolder) {
+    var fso, _f, _fc;
+	fso = new ActiveXObject("Scripting.FileSystemObject");
+	_f = fso.GetFolder(pFolder);
+	_fc = new Enumerator(_f.subfolders);
+	for ( ;!_fc.atEnd();_fc.moveNext()) {
+		_str += _fc.item();
+		_str += "<br>";
+        if (_fc.item().subfolders.count!=0) {
+			 _getFolder(_fc.item());
+         }
+
+    }
+}
+
+
+var dtStart = new Date();
+var fso, a, fc;
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+var a = fso.getFolder("e:\\HOME\\JAD_PRO\\10_PKM\\__MYBASE\\__WIZKM\\Data\\Default");
+var _str="";
+
+//var _aryList
+fc = new Enumerator(a.SubFolders);
+   for (;!fc.atEnd(); fc.moveNext())
+      {
+         _str += fc.item();
+         _str += "<br>";
+		 if (fc.item().subfolders.count!=0) {
+			 _getFolder(fc.item());
+         }
+      }
+
+//for (var i =0 ; i<fc.count; i++) {
+//    _str += a.subfolders.folder[i].name  + "<br>";
+//}
+//alert(_str);
+
+var dtEnd = new Date();
+
+info.innerHTML = dtEnd-dtStart;
+
+test.innerHTML = _str;
+
+/*
+var   o   =   $( 'fsDrivers');
+for (var   i=0;   i <a.length;   i++) {
+    var   op   =   document.createElement( 'OPTION');
+    op.value   =   a[i]   +   ':';
+    op.innerText     =   a[i]   +   ':';
+    o.appendChild(op);
+}
+*/
+</script>

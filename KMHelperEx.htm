@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Knowledge Management</title>
+<link rel="stylesheet" type="text/css" href="base_style.css"/> 
+</head>
+<body>
+<table sytle="width:100%;">
+<tr>
+	<td style="width:60px" id="iname_document_guid">GUID</td>
+	</td><td id="ivalue_document_guid"></td>
+	<td></td>
+	<td></td>
+	</tr>
+<tr>
+	<td style="width:60px" id="iname_document_title">文章标题</td><td id="ivalue_document_title"></td>
+	<td></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_document_author">作&nbsp;&nbsp;者</td>
+	<td id="ivalue_document_author"> <input id="textAuthor" type="text" 
+		onchange="return textAuthor_onchange()" style="width: 250px;" />
+		</td>
+		<td style="width: 1%"><img src="search.gif" 
+		onclick="SearchByKeywords();" />
+</td> 
+	<td></td>
+</tr>
+<tr>
+	<td id="iname_document_keyword">关键词</td>
+	<td id="ivalue_document_keyword">
+		<input id="textKeywords" type="text" 
+		onchange="return textKeywords_onchange()" style="width: 250px;" />
+		</td>
+	<td style="width:1%">
+		<img src="search.gif" onclick="SearchByKeywords();"/>
+		</td>
+	</tr>
+	<tr>
+	<td id="iname_star_evaluate">评价</td>
+	<td id="ivalue_star_evaluate">
+		<img style="vertical-align:middle;" id="rate1" src="start1.gif" /><img 
+			style="vertical-align:middle;" id="rate2" src="start1.gif" /><img 
+			style="vertical-align:middle;" id="rate3" src="start1.gif" /><img 
+			style="vertical-align:middle;" id="rate4" src="start1.gif" /><img 
+			style="vertical-align:middle;" id="rate5" src="start1.gif" />&nbsp; 
+			<a href="javascript:removeRate();">(X)</a>
+		</td>
+	<td></td>
+	</tr>
+		<tr>
+	<td id="iname_document_url">地址</td><td id="ivalue_document_url"></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_document_location">分类</td><td id="ivalue_document_location"></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_document_tag">标签</td><td id="ivalue_document_tag"></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_document_owner">创建者</td><td id="ivalue_document_owner"></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_dt_created">创建时间</td><td id="ivalue_dt_created"></td>
+	<td></td>
+	</tr>
+<tr>
+	<td id="iname_dt_modified">修改时间</td><td id="ivalue_dt_modified"></td>
+	<td></td>
+	</tr>
+	<tr>
+	<td id="iname_document_readcount">阅读次数</td><td id="ivalue_document_readcount"></td>
+	<td></td>
+	</tr>
+	<tr>
+	<td id="iname_document_style">样式</td><td id="ivalue_document_style"></td>
+	<td></td>
+	</tr>
+	<tr>
+		<td align="right"></td>
+		<td id="TD_KEYWORD_FLAG" align="left">&nbsp;&nbsp;</td>
+		<td style="width: 1%">&nbsp;</td>
+	</tr>
+		<tr>
+		<td align="right"></td>
+		<td id="TD_SMARTTAG_FLAG" align="left">&nbsp;&nbsp;</td>
+		<td style="width: 1%">&nbsp;</td>
+	</tr>
+	</table>
+
+<span id='dd'></span>
+
+</body>
+</html>
+<script language="javascript" type="text/javascript" src="KMHelperEX.js">
+</script>
+
