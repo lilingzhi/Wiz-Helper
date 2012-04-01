@@ -1387,7 +1387,7 @@ function KMOnMouseUp() {
         return;
     //
     var sel = KMGetSelection(doc);
-    if (KMIsSelected(sel)) {
+    if (KMIsSelected(sel) && event.ctrlKey) {
         //
         g_KMSelection = sel;
         //
@@ -1403,7 +1403,8 @@ function KMOnMouseUp() {
         objSmartTag.style.display = "";
         objSmartTag.style.left = x + "px";
         objSmartTag.style.top = y + "px";
-    } else {
+    }
+    else {
         var objSmartTag = KMGetSmartTagWindow(doc, false);
         if (objSmartTag != null) {
             objSmartTag.style.display = "none";
