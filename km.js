@@ -4,13 +4,13 @@ FSO∂‘œÛ
 
 var g_KMHelperFSO = null;
 
-var g_HL_Red = "#ff0000";
 var g_HL_Pink = "#ff00ff";
 var g_HL_Blue = "#99ccff";
 var g_HL_Yellow = "#ffff00";
-var g_HL_Green = "#00ff00";
 var g_HL_Orange = "#ff9900";
+var g_HL_Green = "#00ff00";
 var g_HL_Purple = "#cc99ff";
+var g_HL_Red = "#ff0000";
 
 
 
@@ -1323,8 +1323,8 @@ function KMGetSmartTagWindow(doc, create) {
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_yellow.png", "strMarkYellow", "KMSmartTagYellowImg", KMOnSmartTagYellowClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_orange.png", "strMarkOrange", "KMSmartTagOrangeImg", KMOnSmartTagOrangeClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_green.png", "strMarkGreen", "KMSmartTagGreenImg", KMOnSmartTagGreenClick);
-    KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_red.png", "strMarkRed", "KMSmartTagRedImg", KMOnSmartTagRedClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_purple.png", "strMarkPurple", "KMSmartTagPurpleImg", KMOnSmartTagPurpleClick);
+    KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_red.png", "strMarkRed", "KMSmartTagRedImg", KMOnSmartTagRedClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_eraser.png", "strEraser", "KMSmartTagEraserImg", KMOnSmartTagEraserClick);
 
 
@@ -1488,6 +1488,14 @@ function KMKeyMon() {
             if (KMIsSelected(sel)) {
                 g_KMSelection = sel;
                 g_KMSelection.execCommand("BackColor", false, g_HL_Purple);
+                KMSetDocumentModified(doc);
+            }
+            break;
+        case 55: //alt+7
+            var sel = KMGetSelection(doc);
+            if (KMIsSelected(sel)) {
+                g_KMSelection = sel;
+                g_KMSelection.execCommand("BackColor", false, g_HL_Red);
                 KMSetDocumentModified(doc);
             }
             break;
