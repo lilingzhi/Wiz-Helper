@@ -1387,7 +1387,7 @@ function KMOnMouseUp() {
         return;
     //
     var sel = KMGetSelection(doc);
-    if (KMIsSelected(sel) && event.ctrlKey) {
+    if (KMIsSelected(sel) && event.altKey) {
         //
         g_KMSelection = sel;
         //
