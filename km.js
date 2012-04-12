@@ -1387,7 +1387,11 @@ function KMOnMouseUp() {
         return;
     //
     var sel = KMGetSelection(doc);
-    if (KMIsSelected(sel) && event.altKey) {
+    // WizAlert("isAltDownNeeded");
+    var objDatabase = objApp.Database;
+    var isAltDownNeeded = objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG");
+    // WizAlert(isAltDownNeeded);
+    if (KMIsSelected(sel) && (event.altKey || isAltDownNeeded!="1") ) {
         //
         g_KMSelection = sel;
         //

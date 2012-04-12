@@ -8,9 +8,14 @@
 	<table sytle="width:100%;">
         <tr>
             <td colspan="2" style = "border-bottom-style:groove;" nowrap="nowrap">
-    			<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' ><label id='strSyntax'>Wiki syntax highlight</label>
+    			<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' >
+    			<label id='strSyntax'>Syntax highlight</label>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <input id='chkSmarttag' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setSMARTTAG_FLAG()' ><label id='strHelper'>Wiz helper</label> 
+                <input id='chkSmarttag' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setSMARTTAG_FLAG()' >
+                <label id='strHelper'>Wizhelper</label> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input id='chkAltkey' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setALTKEY_FLAG()' >
+                <label id='strAltkey'>Alt down needed</label> 
             </td>
     	</tr>
 		<tr>
@@ -457,7 +462,7 @@
 			ivalue_document_readcount.innerHTML = objDoc.ReadCount;
 		}
 		//
-		// 读取当前维基语法高亮与wiz助手高亮状态
+		// 读取当前维基语法高亮, wiz助手高亮, 必须按下Alt触发Wizhelper 状态
         function getFlags() {
             if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") == "1")
                 chkKeyword.setAttribute("checked", "checked");
@@ -468,6 +473,11 @@
                 chkSmarttag.setAttribute("checked", "checked");
             else
                 chkSmarttag.setAttribute("checked", "");
+            //
+            if (objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") == "1") 
+                chkAltkey.setAttribute("checked", "checked");
+            else
+                chkAltkey.setAttribute("checked", "");
         }
         // 切换维基语法高亮状态
         function setKEYWORD_FLAG() {
@@ -489,6 +499,17 @@
             else {
                 chkSmarttag.setAttribute("checked", "");
                 objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "0";
+            }
+        }
+        // 切换是否按下Alt键才触发Wizhelper
+        function setALTKEY_FLAG() {
+            if (chkAltkey.checked) {
+                chkAltkey.setAttribute("checked", "checked");
+                objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "1";
+            }
+            else {
+                chkAltkey.setAttribute("checked", "");
+                objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";
             }
         }
 		//
