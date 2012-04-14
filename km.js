@@ -12,8 +12,14 @@ var g_HL_Green = "#00ff00";
 var g_HL_Purple = "#cc99ff";
 var g_HL_Red = "#ff0000";
 
+var g_KMSelection = null;
+var g_KMSmartTagDivID = "WizKMSmartTagDivID";
+var g_KMFlashMenuDivID = "WizKMFlashMenuDivID";
+var g_KMCommentWindowDivID = "WizKMCommentWindowDivID";
+var g_KMCommentWindowTextDivID = "KMCommentText";
+var g_KMMousePos = { x: 0, y: 0};
 
-
+RegKMButton();
 
 function KMGetFSOObject() {
     if (!g_KMHelperFSO) {
@@ -23,10 +29,8 @@ function KMGetFSOObject() {
 }
 
 
-/*
-文档关键字高亮代码
-*/
-
+////=================================================================================
+////文档关键字高亮代码
 var KMHighlighter = function(colors) {
     this.colors = colors;
     if (this.colors == null) {
@@ -122,54 +126,50 @@ KMHighlighter.prototype.sort = function(list) {
              });
 }
 
-//@endware 这里是顶部的帮助按钮
-/*
-添加知识管理按钮并且相应该按钮消息，显示一个下拉框，该下拉框内容是一个html文件
-*/
+////=================================================================================
+////添加知识管理按钮并且相应该按钮消息，显示一个下拉框，该下拉框内容是一个html文件
+//
+function RegKMButton() {
+    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var languageFileName = pluginPath + "plugin.ini";
+    var buttonWizhelper = objApp.LoadStringFromFile(languageFileName, "buttonWizhelper"); //WIZ_HELPER
+    var buttonNoteplus = objApp.LoadStringFromFile(languageFileName, "buttonNoteplus");
+    var buttonTagsCloud = objApp.LoadStringFromFile(languageFileName, "buttonTagsCloud");
 
-/*
-function getDocRate(objApp) {
-    var rateval = objApp.Window.CurrentDocument.ParamValue("Rate");
-    if (rateval == null || rateval == "")
-        return "0";
-    //
-    return rateval;
+    objWindow.AddToolButton("document", "KMHelperButton", buttonWizhelper, "", "OnKMHelperButtonClicked");
+    objWindow.AddToolButton("document", "KMNoteplusButton", buttonNoteplus, "", "OnNotetakingButtonClicked");
+    objWindow.AddToolButton("main", "KMTagsCloudButton", buttonTagsCloud, "", "OnKMTagsCloudButtonClicked");
+    objWindow.AddToolButton("main", "KMHelperExButton", "【Status】", "", "OnKMHelperExButtonClicked");
 }
-*/
 
-
+function OnKMHelperButtonClicked() {
+    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var helperFileName = pluginPath + "KMHelperEx.htm";
+    var rect = objWindow.GetToolButtonRect("document", "KMHelperButton");
+    var arr = rect.split(',');
+    // left,top,right,bottom
+    objWindow.ShowSelectorWindow(helperFileName, arr[0], arr[3], 300, 500, "");
+}
 
 function OnNotetakingButtonClicked() {
     var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
     var noteFileName = pluginPath + "Notetaking.htm";
     //
-    var rect = objWindow.GetToolButtonRect("document", "NTButton");
+    var rect = objWindow.GetToolButtonRect("document", "KMNoteplusButton");
     var arr = rect.split(',');
     objWindow.ShowSelectorWindow(noteFileName, arr[0], arr[3], 300, 500, "");
 }
 
-function OnKMHelperButtonClicked() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-    var helperFileName = pluginPath + "km.htm";
-    //
-    var rect = objWindow.GetToolButtonRect("document", "KMHelperButton");
-    var arr = rect.split(',');
-    objWindow.ShowSelectorWindow(helperFileName, arr[0], arr[3], 300, 500, "");
-}
-
 function OnKMHelperExButtonClicked() {
     if (objWindow.CurrentDocument != null) {
-        
         var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
         var helperFileName = pluginPath + "KMHelperEx.htm";
-        
-        // left,top,right,bottom
-        var rect = objWindow.GetToolButtonRect("main", "KMHelperEx");
+        var rect = objWindow.GetToolButtonRect("main", "KMHelperExButton");
         var arr = rect.split(',');
-        objWindow.ShowSelectorWindow(helperFileName, arr[0], arr[3], 450, 500, "");
+        // left,top,right,bottom
+        objWindow.ShowSelectorWindow(helperFileName, arr[0], arr[3], 300, 500, "");
     }
 }
-
 
 function OnKMTagsCloudButtonClicked() {
     var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
@@ -179,77 +179,6 @@ function OnKMTagsCloudButtonClicked() {
     var arr = rect.split(',');
     objWindow.ShowSelectorWindow(cloudFileName, arr[0], arr[3], 600, 600, "");
 }
-
-function OnOpenPageButtonClicked() {
-    if (objWindow.CurrentDocument != null) {
-        var iniFile = objApp.DataStore + "wizconfig.ini";
-        var objUI = objApp.CommonUI;
-        var ExtBrowser = ""; 
-
-        var objDB = objApp.Database;
-
-        ExtBrowser = objUI.GetValueFromIni(iniFile, "EXTBROWSER", "ExtBrowser1");
-
-        objDB.Meta("TEST","MSG_200")= iniFile;
-
-
-        if (ExtBrowser != null  && ExtBrowser != "") {
-            objUI.RunExe(ExtBrowser, "", false);
-        } else {
-            objUI.SetValueToIni(iniFile, "EXTBROWSER", "ExtBrowser1", ExtBrowser);
-
-        }
-
-    }
-}
-
-function OnmyTestClicked() {
-    if (objWindow.CurrentDocument != null) {
-        
-        var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-        var myTestFileName = pluginPath + "myTest.hta";
-        
-        // left,top,right,bottom
-        var rect = objWindow.GetToolButtonRect("main", "myTest");
-        var arr = rect.split(',');
-        objWindow.ShowSelectorWindow(myTestFileName, arr[0], arr[3], 500, 500, "");
-    }
-}
-
-function OnmyTest2Clicked() {
-    if (objWindow.CurrentDocument != null) {
-        
-        var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-        var myTestFileName = pluginPath + "myTest2.htm";
-        
-        // left,top,right,bottom
-        var rect = objWindow.GetToolButtonRect("main", "myTest2");
-        var arr = rect.split(',');
-        objWindow.ShowSelectorWindow(myTestFileName, arr[0], arr[3], 500, 500, "");
-    }
-}
-
-
-
-
-function RegKMButton() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-    var languageFileName = pluginPath + "plugin.ini";
-    var buttonText = objApp.LoadStringFromFile(languageFileName, "strKM"); //WIZ_HELPER
-
-    objWindow.AddToolButton("document", "KMHelperButton", buttonText, "", "OnKMHelperButtonClicked");
-    objWindow.AddToolButton("document", "NTButton", "笔记+", "", "OnNotetakingButtonClicked");
-    var buttonTextTagsCloud = objApp.LoadStringFromFile(languageFileName, "buttonTagsCloud");
-    objWindow.AddToolButton("main", "KMTagsCloudButton", buttonTextTagsCloud, "", "OnKMTagsCloudButtonClicked");
-//    objWindow.AddToolButton("main", "myTest", "myTest", "", "OnmyTestClicked");
-//    objWindow.AddToolButton("main", "myTest2", "myTest2", "", "OnmyTest2Clicked");
-    objWindow.AddToolButton("main", "KMHelperEx", "【Status】", "", "OnKMHelperExButtonClicked");
-//    objWindow.AddToolButton("document", "KMOpenPage", "O+", "", "OnOpenPageButtonClicked");
-}
-
-RegKMButton();
-
-
 
 
 /*
@@ -367,7 +296,6 @@ function KMKeywordSpanOnClick() {
 /*
 作者
 */
-
 function KMAuthorSpanOnClick() {
     KMShowListWindow("author");
 }
@@ -379,13 +307,6 @@ function KMGetFlashMenuStyle1() {
 function KMGetFlashMenuStyle2() {
     return "cursor:hand; padding:2; display: block; width: 168px; text-align: left; text-decoration: none; font-family:arial; font-size:9pt; color: #000000; BORDER: none; border: solid 1px #6100C1;background-color:#F0E1FF";
 }
-
-var g_KMSelection = null;
-var g_KMSmartTagDivID = "WizKMSmartTagDivID";
-var g_KMFlashMenuDivID = "WizKMFlashMenuDivID";
-var g_KMCommentWindowDivID = "WizKMCommentWindowDivID";
-var g_KMCommentWindowTextDivID = "KMCommentText";
-var g_KMMousePos = { x: 0, y: 0}
 
 //
 function KMStringTrim(str) {
@@ -463,8 +384,6 @@ function KMFlashSelectionAsKeywords() {
 function KMFlashSelectionAsAuthor() {
     KMFlashSelectionAs("author");
 }
-
-
 
 
 function KMFlashMenuItemMouseOver() {
@@ -1315,9 +1234,9 @@ function KMGetSmartTagWindow(doc, create) {
     var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
     //
     objSmartTagWindow = doc.createElement("DIV");
-    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; display:none; backgroud-color:red;";
+    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; display:none; ";
     objSmartTagWindow.id = g_KMSmartTagDivID;
-    //
+    // Row 1: Highlighter
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_pink.png", "strMarkPink", "KMSmartTagPinkImg", KMOnSmartTagPinkClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_blue.png", "strMarkBlue", "KMSmartTagBlueImg", KMOnSmartTagBlueClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_yellow.png", "strMarkYellow", "KMSmartTagYellowImg", KMOnSmartTagYellowClick);
@@ -1326,8 +1245,7 @@ function KMGetSmartTagWindow(doc, create) {
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_purple.png", "strMarkPurple", "KMSmartTagPurpleImg", KMOnSmartTagPurpleClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_red.png", "strMarkRed", "KMSmartTagRedImg", KMOnSmartTagRedClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_eraser.png", "strEraser", "KMSmartTagEraserImg", KMOnSmartTagEraserClick);
-
-
+    // Row 2: Others
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_bookmark.png", "strBookmark", "KMSmartTagBookmarkImg", KMOnBookmarkClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_contents.png", "strContents","KMSetAsContent", KMOnSetAsContentClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_google.png", "strSeIcon", "KMSmartTagSeIconImg", KMOnSearchEngineClick);
@@ -1336,7 +1254,6 @@ function KMGetSmartTagWindow(doc, create) {
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_linkto.png", "strLinkTo","KMSmartTagLinkToImg", KMOnLinkToClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_flash.png", "strKM", "KMSmartTagFlashImg", KMOnSmartTagFlashClick);
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_readitlater.png", "strReadItLater","KMSmartTagRILImg", KMFlashSelectionAsRIL);
-    
     //
     return doc.body.appendChild(objSmartTagWindow);
 }
@@ -1375,8 +1292,8 @@ function KMOnMouseUp() {
         return;
     var event = win.event;
     //
-    if (event.button != 1)
-        return;
+    // if (event.button != 1)
+    //     return;
     //
     var src = event.srcElement;
     if (src.id == g_KMSmartTagDivID)
@@ -1387,21 +1304,31 @@ function KMOnMouseUp() {
         return;
     //
     var sel = KMGetSelection(doc);
-    // WizAlert("isAltDownNeeded");
     var objDatabase = objApp.Database;
     var isAltDownNeeded = objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG");
-    // WizAlert(isAltDownNeeded);
     if (KMIsSelected(sel) && (event.altKey || isAltDownNeeded!="1") ) {
         //
         g_KMSelection = sel;
         //
-        var scrollX = Math.max(doc.body.scrollLeft, doc.documentElement.scrollLeft);
-        var scrollY = Math.max(doc.body.scrollTop, doc.documentElement.scrollTop);
-        var x = event.clientX + scrollX;
-        var y = event.clientY + scrollY;
-        //
-        y += 20;
-        //
+        if (event.button == 1) {
+            var scrollX = Math.max(doc.body.scrollLeft, doc.documentElement.scrollLeft);
+            var scrollY = Math.max(doc.body.scrollTop, doc.documentElement.scrollTop);
+            var x = event.clientX + scrollX;
+            var y = event.clientY + scrollY;
+            y += 20;
+        }
+        else {
+            var markerTextCharEntity = "&#xfeff;";
+            var markerId = "sel_" + new Date().getTime() + "_" + Math.random().toString().substr(2);
+            var range = sel.duplicate();
+            range.collapse(false);
+            range.pasteHTML('<span id="' + markerId + '" style="position: relative;">' + markerTextCharEntity + '</span>');
+            var markerEl = doc.getElementById(markerId);
+            var x = markerEl.offsetLeft;
+            var y = markerEl.offsetTop;
+            y += 20;
+            markerEl.parentNode.removeChild(markerEl);
+        }
         var objSmartTag = KMGetSmartTagWindow(doc, true);
         //
         objSmartTag.style.display = "";
@@ -1418,7 +1345,6 @@ function KMOnMouseUp() {
     KMCloseFlashMenu(doc, null);
 }
 
-
 function KMKeyMon() {
 //	objDB.Meta("TEST","MSG_311") = "t1";
     var doc = objWindow.CurrentDocumentHtmlDocument;
@@ -1430,7 +1356,6 @@ function KMKeyMon() {
         return;
     var event = win.event;
 
-
     var src = event.srcElement;
     if (src.id == g_KMSmartTagDivID)
         return;
@@ -1439,14 +1364,11 @@ function KMKeyMon() {
     if (src.parentElement.id == g_KMCommentWindowTextDivID)
         return;
 
-    //
-    //var sel = KMGetSelection(doc);
-    //
-
-
-
     if (event.altKey) {
         switch (event.keyCode) {
+        case 18: //alt
+            KMOnMouseUp();
+            break;
         case 49: //alt+1
             var sel = KMGetSelection(doc);
             if (KMIsSelected(sel)) {
@@ -1596,9 +1518,6 @@ function KMOnHtmlDocumentComplete(doc) {
 
     KMAttachCommentEvents(doc);
     KMAttachLinkToEvents(doc);
-    //if ( objDB.Meta("ExMeta","EMSyncParm") == "1" ) {
-    EMSyncParm();
-    //}
     if (objWindow.CurrentDocument != null) {
         UpdateButtonStatus();
     }
@@ -1728,60 +1647,23 @@ function KMOnDocumentBeforeEdit(objHtmlDocument, objWizDocument) {
     KMSaveDocument(objHtmlDocument, objWizDocument);
 }
 function KMOnDocumentBeforeClose(objHtmlDocument, objWizDocument) {
-    //EMSyncParm();
     KMSaveDocument(objHtmlDocument, objWizDocument);
 }
 
 
 function KMOnDocumentBeforeChange(objHtmlDocument, objWizDocumentOld, objWizDocumentNew) {
-    //EMSyncParm();
     KMSaveDocument(objHtmlDocument, objWizDocumentOld);
 }
 
-function EMSyncParm() {
-    try {
-        var objDoc = objApp.Window.CurrentDocument;
-        
-        var pDoc_rcnt_old = 0;
-        if (objDoc.ReadCount!=null) {
-            pDoc_rcnt_old = parseInt(objDoc.ReadCount);
-        }
-        var pP_rcnt_old = 0;
-        if (objDoc.ParamValue('DOC_READ_COUNT')!=null) {
-            pP_rcnt_old = parseInt(objDoc.ParamValue('DOC_READ_COUNT'));
-        }
-
-
-        objDoc.BeginUpdateParams();
-        if ( pDoc_rcnt_old < pP_rcnt_old) {
-            objDoc.ParamValue('DOC_READ_COUNT')= pP_rcnt_old+1;
-            objDoc.ReadCount= pP_rcnt_old+1;
-        } else {
-            objDoc.ParamValue('DOC_READ_COUNT') = pDoc_rcnt_old;
-        }
-        objDoc.EndUpdateParams();
-    }
-    catch (err) {
-        //        WizAlert(err.message);
-        //
-    }
-}
-
 function UpdateButtonStatus() {
-    //var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-    //var languageFileName = pluginPath + "plugin.ini";
-    //var buttonText = objApp.LoadStringFromFile(languageFileName, "strKM"); //WIZ_HELPER
+    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var languageFileName = pluginPath + "plugin.ini";
+    var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
     
     var objDoc = objApp.Window.CurrentDocument;
     
     var objDB = objApp.Database;
-    var pNote_title = "";
-//wiz只要点击文件后readcounter就+1
-    if (objDoc.ReadCount <= 1 ) {
-        pNote_title = "未读";
-    } else {
-        pNote_title = "已读(" + (objDoc.ReadCount-1) + ")";
-    }
+    var pNote_title = strRead + "(" + (objDoc.ReadCount-1) + ")";
     
     switch (objDoc.ParamValue("Rate")) {
     case "1":
@@ -1803,8 +1685,8 @@ function UpdateButtonStatus() {
         break;
     }
     objDB.Meta("TEST","MSG_500") = pNote_title;
-    objWindow.RemoveToolButton("main", "KMHelperEx");
-    objWindow.AddToolButton("main", "KMHelperEx", "【" + pNote_title + "】", "", "OnKMHelperExButtonClicked");
+    objWindow.RemoveToolButton("main", "KMHelperExButton");
+    objWindow.AddToolButton("main", "KMHelperExButton", "【" + pNote_title + "】", "", "OnKMHelperExButtonClicked");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
