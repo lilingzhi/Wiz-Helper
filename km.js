@@ -1234,7 +1234,7 @@ function KMGetSmartTagWindow(doc, create) {
     var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
     //
     objSmartTagWindow = doc.createElement("DIV");
-    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; display:none; ";
+    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; display:none;";
     objSmartTagWindow.id = g_KMSmartTagDivID;
     // Row 1: Highlighter
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_pink.png", "strMarkPink", "KMSmartTagPinkImg", KMOnSmartTagPinkClick);
@@ -1322,15 +1322,15 @@ function KMOnMouseUp() {
             var markerId = "sel_" + new Date().getTime() + "_" + Math.random().toString().substr(2);
             var range = sel.duplicate();
             range.collapse(false);
-            range.pasteHTML('<span id="' + markerId + '" style="position: relative;">' + markerTextCharEntity + '</span>');
+            range.pasteHTML('<span id="' + markerId + '"  style="POSITION:absolute;">' + markerTextCharEntity + '</span>');
             var markerEl = doc.getElementById(markerId);
-            var x = markerEl.offsetLeft;
+            var x = markerEl.offsetLeft; 
             var y = markerEl.offsetTop;
-            y += 20;
+            y += 30;
             markerEl.parentNode.removeChild(markerEl);
         }
         var objSmartTag = KMGetSmartTagWindow(doc, true);
-        //
+       //
         objSmartTag.style.display = "";
         objSmartTag.style.left = x + "px";
         objSmartTag.style.top = y + "px";
@@ -1425,7 +1425,7 @@ function KMKeyMon() {
                 KMSetDocumentModified(doc);
             }
             break;
-        case 48: //alt+0 clean highligth
+        case 48: case 192: //alt+0, alt+` clean highligth
             var sel = KMGetSelection(doc);
             if (KMIsSelected(sel)) {
                 g_KMSelection = sel;
