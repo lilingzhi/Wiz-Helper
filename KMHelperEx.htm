@@ -26,24 +26,24 @@
 			<td nowrap="nowrap"><label id="strAuthor">Author</label> :</td>
 			<td id="ivalue_document_author">
                 <input id="textAuthor" type="text" onchange="return textAuthor_onchange()" style="width: 150px;" />
-    			<img src="search.gif" onclick="SearchByKeywords();" />
+    			<img src="km_search.png" onclick="SearchByKeywords();" />
             </td>
 		</tr>
 		<tr>
 			<td nowrap="nowrap"><label id="strKeywords">Keywords</label> :</td>
 			<td id="ivalue_document_keyword">
                 <input id="textKeywords" type="text" onchange="return textKeywords_onchange()" style="width: 150px;" />
-			    <img src="search.gif" onclick="SearchByKeywords();"/>
+			    <img src="km_search.png" onclick="SearchByKeywords();"/>
             </td>
 		</tr>
 		<tr>
 			<td nowrap="nowrap"><label id="strStars">Stars</label> :</td>
 			<td>
-				<img style="vertical-align:middle;" id="rate1" src="start1.gif" />
-				<img style="vertical-align:middle;" id="rate2" src="start1.gif" />
-				<img style="vertical-align:middle;" id="rate3" src="start1.gif" />
-				<img style="vertical-align:middle;" id="rate4" src="start1.gif" />
-				<img style="vertical-align:middle;" id="rate5" src="start1.gif" />&nbsp; 
+				<img style="vertical-align:middle;" id="rate1" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate2" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate3" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate4" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate5" src="km_star1.png" />&nbsp; 
 				<a href="javascript:removeRate();">(X)</a>
 			</td>
 		</tr>
@@ -103,7 +103,7 @@
 		var objDoc = objWindow.CurrentDocument; //获得当前正在浏览的Wiz文档(WizDocument)
 		var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;	//获得当前正在浏览的html网页的document对象(IHTMLDocument2)
 		//
-		var pluginPath = objApp.GetPluginPathByScriptFileName("km.js"); //获得插件的路径
+		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //获得插件的路径
 		var languangeFileName = pluginPath + "plugin.ini";  //语言文件
 		//
 		textKeywords.value = objDoc.Keywords;   //显示当前文档的关键字
@@ -391,8 +391,8 @@
 		}
 		//
 		var imgRateArray = [rate1, rate2, rate3, rate4, rate5];
-		var imgRateSrc1 = 'start1.gif';
-		var imgRateSrc2 = 'start2.gif';
+		var imgRateSrc1 = 'km_star1.png';
+		var imgRateSrc2 = 'km_star2.png';
 		//
 		function onRateImageClick() {
 			setDocRate(window.event.srcElement._num + 1);

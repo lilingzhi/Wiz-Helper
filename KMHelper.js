@@ -130,7 +130,7 @@ KMHighlighter.prototype.sort = function(list) {
 ////添加知识管理按钮并且相应该按钮消息，显示一个下拉框，该下拉框内容是一个html文件
 //
 function RegKMButton() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     var buttonWizhelper = objApp.LoadStringFromFile(languageFileName, "buttonWizhelper"); //WIZ_HELPER
     var buttonNoteplus = objApp.LoadStringFromFile(languageFileName, "buttonNoteplus");
@@ -143,7 +143,7 @@ function RegKMButton() {
 }
 
 function OnKMHelperButtonClicked() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var helperFileName = pluginPath + "KMHelperEx.htm";
     var rect = objWindow.GetToolButtonRect("document", "KMHelperButton");
     var arr = rect.split(',');
@@ -152,8 +152,8 @@ function OnKMHelperButtonClicked() {
 }
 
 function OnNotetakingButtonClicked() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-    var noteFileName = pluginPath + "Notetaking.htm";
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var noteFileName = pluginPath + "KMNoteplus.htm";
     //
     var rect = objWindow.GetToolButtonRect("document", "KMNoteplusButton");
     var arr = rect.split(',');
@@ -162,7 +162,7 @@ function OnNotetakingButtonClicked() {
 
 function OnKMHelperExButtonClicked() {
     if (objWindow.CurrentDocument != null) {
-        var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+        var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
         var helperFileName = pluginPath + "KMHelperEx.htm";
         var rect = objWindow.GetToolButtonRect("main", "KMHelperExButton");
         var arr = rect.split(',');
@@ -172,8 +172,8 @@ function OnKMHelperExButtonClicked() {
 }
 
 function OnKMTagsCloudButtonClicked() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
-    var cloudFileName = pluginPath + "tagscloud.htm";
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var cloudFileName = pluginPath + "KMTagsCloud.htm";
     //
     var rect = objWindow.GetToolButtonRect("main", "KMTagsCloudButton");
     var arr = rect.split(',');
@@ -274,8 +274,8 @@ function KMShowListWindow(type) {
     if (text == null || text == "")
         return false;
     //
-    var pluginpath = objApp.GetPluginPathByScriptFileName("km.js");
-    var url = pluginpath + "listdocuments.htm?type=" + type + "&text=" + text;
+    var pluginpath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var url = pluginpath + "inlinedoclistdoc.htm?type=" + type + "&text=" + text;
     objWindow.ShowSelectorWindow(url, e.screenX, e.screenY, 350, 200, "");
 }
 
@@ -421,7 +421,7 @@ function KMAddFlashMenuItem(doc, divParent, text, callback) {
     divParent.appendChild(item);
 }
 function KMAddFlashMenuItem2(doc, divParent, textName, callback) {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     //
     KMAddFlashMenuItem(doc, divParent, objApp.LoadStringFromFile(languageFileName, textName), callback);
@@ -894,10 +894,10 @@ function KMGetCommentWindow(doc, create) {
     if (!create)
         return null;
     //
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     //
-    var commentHtml = objCommon.LoadTextFromFile(pluginPath + "inlinecomment.htm");
+    var commentHtml = objCommon.LoadTextFromFile(pluginPath + "inlinedoclistdoc.htm");
     commentHtml = commentHtml.replace("strOK", objApp.LoadStringFromFile(languageFileName, "strOK"));
     commentHtml = commentHtml.replace("strCancel", objApp.LoadStringFromFile(languageFileName, "strCancel"));
     commentHtml = commentHtml.replace("strCopy", objApp.LoadStringFromFile(languageFileName, "strCopy"));
@@ -914,7 +914,7 @@ function KMGetCommentWindow(doc, create) {
     //
     var imgClose = doc.getElementById("KMCommentCloseImage");
     if (imgClose) {
-        imgClose.src = pluginPath + "close.gif";
+        imgClose.src = pluginPath + "km_close.png";
         imgClose.attachEvent("onclick", KMCloseCommentWindow);
     }
     //
@@ -1232,7 +1232,7 @@ function KMGetSmartTagWindow(doc, create) {
     if (!create)
         return null;
     //
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     //
     objSmartTagWindow = doc.createElement("DIV");
     objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; background-color:transparent; display:none;";
@@ -1663,7 +1663,7 @@ function KMOnDocumentBeforeChange(objHtmlDocument, objWizDocumentOld, objWizDocu
 }
 
 function UpdateButtonStatus() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
     
@@ -1775,7 +1775,7 @@ function KMCloseSearchWordWindow(doc, menu) {
 // 本地数据库及在线取词
 function KMOnSearchWordClick() {
     var doc = objWindow.CurrentDocumentHtmlDocument;
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     if (!doc)
         return;
@@ -1853,12 +1853,12 @@ function KMOnSearchWordClick() {
 	if (urlAudio != "") {
     	//var htmlAudio = "<embed src='" + urlAudio + "' width=\"50%\" height=\"50%\"></embed>"
 		//var htmlAudio = "<audio src='" + urlAudio + "' controls autoplay>not supported</audio>";
-		//var htmlAudio = "<img dynsrc='" + urlAudio + "' src='"+pluginPath+"audio.gif' alt='朗读单词' border='0' />";
+		//var htmlAudio = "<img dynsrc='" + urlAudio + "' src='"+pluginPath+"km_audio.png' alt='朗读单词' border='0' />";
 		var htmlAudio = "<object id='KMDictAudioObjID' style='display:none' classid=\"clsid:22D6F312-B0F6-11D0-94AB-0080C74C7E95\">";
 		htmlAudio += "<param name=\"AutoStart\" value=\"1\" />";
 		htmlAudio += "<param name=\"FileName\" value=\"" + urlAudio + "\" />";
 		htmlAudio += "</object>";
-		//htmlAudio += "<img src='"+pluginPath+"audio.gif' alt='朗读单词' border='0' onclick='KMDictPlayAudio()' />";
+		//htmlAudio += "<img src='"+pluginPath+"km_audio.png' alt='朗读单词' border='0' onclick='KMDictPlayAudio()' />";
 		doc.getElementById("tdKMSWWbtn0").innerHTML = htmlAudio;
 		//生成朗读单词的按钮
 	    var btnSaveToComment0 = doc.createElement("span");
@@ -1885,7 +1885,7 @@ function KMGetLocalDict(strWord) {
 	var ConnDB = objApp.CreateActiveXObject("ADODB.Connection"); // 使用ADO的Connection对象打开数据库接口
 	if (ConnDB) {
 		var NameDB = "KMdictionary.mdb "; // Access数据库名
-		var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
 		var noteFileName = pluginPath + NameDB;
 		var dbcon = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source= " + noteFileName; // 操作指定数据库,Js使用相对地址
 		ConnDB.Open(dbcon);
@@ -2003,7 +2003,7 @@ function KMGetOnlineDictCn(strWord) {
 					//strHTML += " <h5>  --- Dict.cn 海词  --- </h5>";
 					//strHTML += " <b>" + strKey + "</b> ";
 					//strHTML += " <br><b>[ " + strPhonetic + " ]</b> ";
-					//strHTML += " <a href='" + urlAudio + "'><img src='"+pluginPath+"audio.gif' alt=朗读单词 border='0' /></a> ";;
+					//strHTML += " <a href='" + urlAudio + "'><img src='"+pluginPath+"km_audio.png' alt=朗读单词 border='0' /></a> ";;
 					//strHTML += " <br> " + strExplain;
 					////WizAlert(strKey);
 					//var objSentences = objDict.getElementsByTagName("sent");
@@ -2156,7 +2156,7 @@ function KMAutoCloseSearchWordWindow() {
 //点击【链接到...】按钮
 function KMOnLinkToClick() {
     var doc = objWindow.CurrentDocumentHtmlDocument;
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     if (!doc)
         return;
@@ -2414,7 +2414,7 @@ function KMOnLinkToTextClicked() {
 function KMOnLinkToTextMouseOver() {
 	var objDatabase = objApp.Database;
     var doc = objWindow.CurrentDocumentHtmlDocument;
-    var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     if (!doc)
         return;
@@ -2608,7 +2608,7 @@ function KMOnSetAsContentClick() {
 //
 // 生成【设置为目录项...】窗口
 function KMGetContentWindow(doc, create) {
-	var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
+	var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     var div = doc.getElementById("WizKMContentDivID");
     if (div != null)

@@ -95,7 +95,7 @@ wizhelper 2.1.8 (2011-11-09)
 ===================================================================================
 wizhelper 2.1.6 (2011-11-05)
 目录功能完善：
-1. 大纲级别增加至5级（嫌多的朋友可自行注释掉或删除 km.js 文件 第2512~2513行）：
+1. 大纲级别增加至5级（嫌多的朋友可自行注释掉或删除 KMHelper.js 文件 第2512~2513行）：
     //  KMAddFlashMenuItem2(doc, div, "strSelAsContent4", KMFlashSelAsContent4);
     //  KMAddFlashMenuItem2(doc, div, "strSelAsContent5", KMFlashSelAsContent5);
 2. 大纲标题项后面添加回到顶部的链接，方便插入目录后的跳转。（可选择是否要添加该链接）：

@@ -3,10 +3,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>3D Tag Cloud</title>
+    <link rel="stylesheet" type="text/css" href="base_style.css"/>
     <style type="text/css">
         body
         {
-            background: #000 url(cloud.png) no-repeat center 230px;
+            background: #000 url(km_cloud.png) no-repeat center 230px;
         }
         #divTags
         {
@@ -288,7 +289,7 @@
         //
         var objApp = window.external; //WizExplorerApp
         var objDatabase = objApp.Database;
-        var pluginPath = objApp.GetPluginPathByScriptFileName("km.js"); //获得插件的路径
+        var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //获得插件的路径
         var languangeFileName = pluginPath + "plugin.ini";  //语言文件
         //
         document.title = objApp.LoadStringFromFile(languangeFileName, document.title); //本地化文档标题
