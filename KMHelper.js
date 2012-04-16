@@ -275,7 +275,7 @@ function KMShowListWindow(type) {
         return false;
     //
     var pluginpath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
-    var url = pluginpath + "inlinedoclistdoc.htm?type=" + type + "&text=" + text;
+    var url = pluginpath + "inlinedoclist.htm?type=" + type + "&text=" + text;
     objWindow.ShowSelectorWindow(url, e.screenX, e.screenY, 350, 200, "");
 }
 
