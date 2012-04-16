@@ -1219,6 +1219,7 @@ function KMAddSmartTagButton(pluginPath, doc, objSmartWindow, imgfilename, butto
     img.src = pluginPath + imgfilename;
     img.title = objApp.LoadStringFromFile(pluginPath + "plugin.ini", buttonname);
     img.id = id;
+    img.style.cssText = "padding:0; margin:0; cursor:hand; border-style:none;";
     img.attachEvent("onclick", callback);
     //
     objSmartWindow.appendChild(img);
@@ -1234,7 +1235,7 @@ function KMGetSmartTagWindow(doc, create) {
     var pluginPath = objApp.GetPluginPathByScriptFileName("km.js");
     //
     objSmartTagWindow = doc.createElement("DIV");
-    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; display:none;";
+    objSmartTagWindow.style.cssText = "padding:0; margin:0; cursor:hand; position:absolute; z-index:100000; width:200px; height:48px; background-color:transparent; display:none;";
     objSmartTagWindow.id = g_KMSmartTagDivID;
     // Row 1: Highlighter
     KMAddSmartTagButton(pluginPath, doc, objSmartTagWindow, "tm_pink.png", "strMarkPink", "KMSmartTagPinkImg", KMOnSmartTagPinkClick);
@@ -1310,9 +1311,9 @@ function KMOnMouseUp() {
         //
         g_KMSelection = sel;
         //
+        var scrollX = Math.max(doc.body.scrollLeft, doc.documentElement.scrollLeft);
+        var scrollY = Math.max(doc.body.scrollTop, doc.documentElement.scrollTop);
         if (event.button == 1) {
-            var scrollX = Math.max(doc.body.scrollLeft, doc.documentElement.scrollLeft);
-            var scrollY = Math.max(doc.body.scrollTop, doc.documentElement.scrollTop);
             var x = event.clientX + scrollX;
             var y = event.clientY + scrollY;
             y += 20;
@@ -1328,6 +1329,12 @@ function KMOnMouseUp() {
             var y = markerEl.offsetTop;
             y += 30;
             markerEl.parentNode.removeChild(markerEl);
+        }
+        if (x > (scrollX+doc.body.clientWidth-200)) {
+            x = scrollX+doc.body.clientWidth-200;
+        }
+        if (y > (scrollY+doc.body.clientHeight-48)) {
+            y -= 80;
         }
         var objSmartTag = KMGetSmartTagWindow(doc, true);
        //
