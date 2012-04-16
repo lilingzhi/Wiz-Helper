@@ -1293,9 +1293,6 @@ function KMOnMouseUp() {
         return;
     var event = win.event;
     //
-    // if (event.button != 1)
-    //     return;
-    //
     var src = event.srcElement;
     if (src.id == g_KMSmartTagDivID)
         return;
@@ -1313,23 +1310,23 @@ function KMOnMouseUp() {
         //
         var scrollX = Math.max(doc.body.scrollLeft, doc.documentElement.scrollLeft);
         var scrollY = Math.max(doc.body.scrollTop, doc.documentElement.scrollTop);
-        if (event.button == 1) {
+        // if (event.button == 1) {
             var x = event.clientX + scrollX;
             var y = event.clientY + scrollY;
             y += 20;
-        }
-        else {
-            var markerTextCharEntity = "&#xfeff;";
-            var markerId = "sel_" + new Date().getTime() + "_" + Math.random().toString().substr(2);
-            var range = sel.duplicate();
-            range.collapse(false);
-            range.pasteHTML('<span id="' + markerId + '"  style="POSITION:absolute;">' + markerTextCharEntity + '</span>');
-            var markerEl = doc.getElementById(markerId);
-            var x = markerEl.offsetLeft; 
-            var y = markerEl.offsetTop;
-            y += 30;
-            markerEl.parentNode.removeChild(markerEl);
-        }
+        // }
+        // else {
+        //     var markerTextCharEntity = "&#xfeff;";
+        //     var markerId = "sel_" + new Date().getTime() + "_" + Math.random().toString().substr(2);
+        //     var range = sel.duplicate();
+        //     range.collapse(false);
+        //     range.pasteHTML('<span id="' + markerId + '"  style="POSITION:absolute;">' + markerTextCharEntity + '</span>');
+        //     var markerEl = doc.getElementById(markerId);
+        //     var x = markerEl.offsetLeft; 
+        //     var y = markerEl.offsetTop;
+        //     y += 30;
+        //     markerEl.parentNode.removeChild(markerEl);
+        // }
         if (x > (scrollX+doc.body.clientWidth-200)) {
             x = scrollX+doc.body.clientWidth-200;
         }
