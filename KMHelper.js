@@ -897,7 +897,7 @@ function KMGetCommentWindow(doc, create) {
     var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     //
-    var commentHtml = objCommon.LoadTextFromFile(pluginPath + "inlinedoclistdoc.htm");
+    var commentHtml = objCommon.LoadTextFromFile(pluginPath + "inlinecomment.htm");
     commentHtml = commentHtml.replace("strOK", objApp.LoadStringFromFile(languageFileName, "strOK"));
     commentHtml = commentHtml.replace("strCancel", objApp.LoadStringFromFile(languageFileName, "strCancel"));
     commentHtml = commentHtml.replace("strCopy", objApp.LoadStringFromFile(languageFileName, "strCopy"));
