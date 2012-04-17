@@ -5,6 +5,16 @@
 	<title>Tags add, remove & cloud</title>
 	<link rel="stylesheet" type="text/css" href="base_style.css"/>
 	<style type="text/css">
+		body
+		{
+		    font-family: Arial, Helvetica, Sans-serif;
+		    color: black;
+		    background-color: #fff;
+		    font-size: 10pt;
+		    margin: 0px;
+		    padding: 1em;
+		    line-height: 1.5;
+		}
 		img
 		{
 			border-style: none;
@@ -27,7 +37,7 @@
 	<table>
 		<tr>
 			<td nowrap id="linkUntaged">
-				<a href='javascript:ListDocsUntaged();' style='display:inline-block; font-size:10pt; background-color:#bbbbff; text-decoration:underline; '><div id='labelUntaged'></div></a>
+				<a href='javascript:ListDocsUntaged();' style='display:inline-block; background-color:#bbbbff; text-decoration:underline; '><div id='labelUntaged'></div></a>
 			</td>
 			<td nowrap>
 				<input style='VERTICAL-ALIGN:middle ' type='checkbox' id='chkUnionset'  onclick='toggleUnionset()' /><label id="strUnionset">Union set</label> &nbsp;&nbsp;
@@ -372,7 +382,7 @@
 					var strChecked = "";
 					var strColorBG = "#FFFFFF";
 				}
-				htmlsub += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+				htmlsub += "<span style = 'display:inline-block; background:" + strColorBG + "; '>";
 				htmlsub += "<a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "'); >";
 				htmlsub += tagi.tag.DisplayName + "(" + tagi.count + ")" + strRepeat + "</a></span>&nbsp;&nbsp;&nbsp;&nbsp;";
 				return htmlsub;
@@ -476,7 +486,7 @@
     						var strChecked = "";
     						var strColorBG = "#FFFFFF";
     					}
-    					html += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+    					html += "<span style = 'display:inline-block; background:" + strColorBG + "; '>";
     					html += "<a isSelected=0 id='" + tag.GUID + "' href=javascript:ListDocsByTagGUID('" + tag.GUID + "'); >";
                         html += tag.DisplayName + "(" + count + ")" + strRepeat + "</a></span> &nbsp;&nbsp;&nbsp;";
     				}
@@ -506,7 +516,7 @@
     								var strChecked = "";
     								var strColorBG = "#FFFFFF";
     							}
-    							html += "<span style = 'display:inline-block; font-size:10pt; background:" + strColorBG + "; '>";
+    							html += "<span style = 'display:inline-block; background:" + strColorBG + "; '>";
     							html += "<a isSelected=0 id='" + tag.GUID + "' href=javascript:ListDocsByTagGUID('" + tag.GUID + "'); >";
                                 html += tag.DisplayName + " (" + count + ") " + strRepeat + "</a></span><br>";
     						}

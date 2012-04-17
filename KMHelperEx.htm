@@ -5,9 +5,9 @@
 <link rel="stylesheet" type="text/css" href="base_style.css"/> 
 </head>
 <body>
-	<table sytle="width:100%;">
+	<table cellspacing="0px" sytle="width:100%;">
         <tr>
-            <td colspan="2" style = "border-bottom-style:groove;" nowrap="nowrap">
+            <td colspan="2" style="border-bottom-style:groove;" nowrap="nowrap">
     			<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' >
     			<label id='strSyntax'>Syntax highlight</label>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -75,24 +75,35 @@
 			<td nowrap="nowrap"><label id="strLocation">Address</label> :</td>
 			<td id="ivalue_document_url"></td>
 		</tr>
-		<tr>
+		<tr  >
 			<td nowrap="nowrap"><label id="strFolder">Folder</label> :</td>
 			<td id="ivalue_document_location"></td>
 		</tr>
 		<tr>
-			<td valign=top; nowrap="nowrap"><label id="strTags">Tags</label> :</td>
-			<td><div id="divTags" style="width:100%;"></div></td>
+			<td nowrap="nowrap" style="border-top-style:solid; border-width:thin;">
+				<label id="strTags">Tags</label> :
+			</td>
+			<td style="border-top-style:solid; border-width:thin;">
+				<div id="divTags" style="width:100%;"></div>
+			</td>
 		</tr>
+		<tr>
+            <td colspan="2" nowrap="nowrap">
+				<div id="divCheckbox" style="width:100%;"></div>
+            </td>
+        </tr>
+ 		<tr>
+            <td colspan="2" nowrap="nowrap" style="border-top-style:solid; border-width:thin;">
+				<div id="divStatus" style="width:100%;"></div>
+            </td>
+        </tr>       
+ 		<tr>
+            <td colspan="2" nowrap="nowrap">
+				<div id="divFiles" style="width:100%;"></div>
+            </td>
+        </tr>       
 	</table>
-    
-	<div id="divCheckbox" style="width:100%;">
-	</div>
 
-	<div id="divStatus" style="width:100%;">
-	</div>
-
-	<div id="divFiles" style="width:100%;">
-	</div>
 
 </body>
 </html>
@@ -167,10 +178,10 @@
 		//
 		//
 		function tagToHtml(tagi) {		
-			return "<span style='display:inline-block;font-size: 10pt;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a></span>&nbsp;&nbsp;";
+			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a></span>&nbsp;&nbsp;";
 		}
 		function docToHtml(doci) {		
-			return "<li style='font-size: 10pt; vertical-align: top; margin-top: 5px;'> <A style='text-decoration: none;' href=javascript:OpenDocumentByGUID('" + doci.GUID + "');>" + doci.Name + "</A></li>";
+			return "<li style='vertical-align: top; margin-top: 5px;'> <A style='text-decoration: none;' href=javascript:OpenDocumentByGUID('" + doci.GUID + "');>" + doci.Name + "</A></li>";
 		}
 		function getTag(tagi){
 			var tagData = {};
@@ -192,7 +203,7 @@
             html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkCurFolder' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languangeFileName, "strCurfolder") + " &nbsp;&nbsp;";
 			html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkFilelist' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languangeFileName, "strSendtoDoc") + " <br>";
 			divCheckbox.innerHTML = html_check;
-			divCheckbox.style.cssText="border-top-style:groove; border-bottom-style:groove; border-width:thin;";
+			// divCheckbox.style.cssText="border-top-style:groove; border-bottom-style:groove; border-width:thin;";
 		}
 		// 当前文档含有标签列出所有标签。
 		if ( objTags.Count > 0){
