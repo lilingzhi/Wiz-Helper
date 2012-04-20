@@ -130,16 +130,30 @@ KMHighlighter.prototype.sort = function(list) {
 ////添加知识管理按钮并且相应该按钮消息，显示一个下拉框，该下拉框内容是一个html文件
 //
 function RegKMButton() {
+    var objDatabase = objApp.Database;
     var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var languageFileName = pluginPath + "plugin.ini";
     var buttonWizhelper = objApp.LoadStringFromFile(languageFileName, "buttonWizhelper"); //WIZ_HELPER
     var buttonNoteplus = objApp.LoadStringFromFile(languageFileName, "buttonNoteplus");
     var buttonTagsCloud = objApp.LoadStringFromFile(languageFileName, "buttonTagsCloud");
-
+    //
+    if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") != "1") {objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "0";}
+    if (objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") != "1") {objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "0";}
+    if (objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") != "1") {objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";}
+    if (objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") != "1") {objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "0";}
+    var buttonSyntax = objApp.LoadStringFromFile(languageFileName, "buttonSyntax")+":"+objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG");
+    var buttonHelper = objApp.LoadStringFromFile(languageFileName, "buttonHelper")+":"+objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG");
+    var buttonAltkey = objApp.LoadStringFromFile(languageFileName, "buttonAltkey")+":"+objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG");
+    var buttonDictcn = objApp.LoadStringFromFile(languageFileName, "buttonDictcn")+":"+objDatabase.Meta("wizhelp_parm","DICTCN_FLAG");
+    //
     objWindow.AddToolButton("document", "KMHelperButton", buttonWizhelper, "", "OnKMHelperButtonClicked");
     objWindow.AddToolButton("document", "KMNoteplusButton", buttonNoteplus, "", "OnNotetakingButtonClicked");
     objWindow.AddToolButton("main", "KMTagsCloudButton", buttonTagsCloud, "", "OnKMTagsCloudButtonClicked");
-    objWindow.AddToolButton("main", "KMHelperExButton", "【Status】", "", "OnKMHelperExButtonClicked");
+    objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
+    objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
+    objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
+    objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
+    // objWindow.AddToolButton("main", "KMHelperExButton", "【Status】", "", "OnKMHelperExButtonClicked");
 }
 
 function OnKMHelperButtonClicked() {
@@ -180,6 +194,69 @@ function OnKMTagsCloudButtonClicked() {
     objWindow.ShowSelectorWindow(cloudFileName, arr[0], arr[3], 600, 600, "");
 }
 
+function OnKMSyntaxStatusButtonClicked() { OnKMStatusButtonClicked("KEYWORD_FLAG"); }
+function OnKMHelperStatusButtonClicked() { OnKMStatusButtonClicked("SMARTTAG_FLAG"); }
+function OnKMAltkeyStatusButtonClicked() { OnKMStatusButtonClicked("ALTKEY_FLAG"); }
+function OnKMDictcnStatusButtonClicked() { OnKMStatusButtonClicked("DICTCN_FLAG"); KMCheckDictcn(); }
+function OnKMStatusButtonClicked(strFLAG) {
+    var objDatabase = objApp.Database;
+    if (objDatabase.Meta("wizhelp_parm",strFLAG) == "1") {
+        objDatabase.Meta("wizhelp_parm",strFLAG) = "0";
+    }
+    else {
+        objDatabase.Meta("wizhelp_parm",strFLAG) = "1";
+    }
+    UpdateButtonStatus();
+}
+
+function UpdateButtonStatus() {
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var languageFileName = pluginPath + "plugin.ini";
+    var objDB = objApp.Database;
+    //
+    var buttonSyntax = objApp.LoadStringFromFile(languageFileName, "buttonSyntax") + ":" + objDB.Meta("wizhelp_parm","KEYWORD_FLAG");
+    objWindow.RemoveToolButton("main", "KMSyntaxButton");
+    objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
+    //
+    var buttonHelper = objApp.LoadStringFromFile(languageFileName, "buttonHelper") + ":" + objDB.Meta("wizhelp_parm","SMARTTAG_FLAG");
+    objWindow.RemoveToolButton("main", "KMHelperButton");
+    objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
+    //
+    var buttonAltkey = objApp.LoadStringFromFile(languageFileName, "buttonAltkey") + ":" + objDB.Meta("wizhelp_parm","ALTKEY_FLAG");
+    objWindow.RemoveToolButton("main", "KMAltkeyButton");
+    objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
+    //
+    var buttonDictcn = objApp.LoadStringFromFile(languageFileName, "buttonDictcn") + ":" + objDB.Meta("wizhelp_parm","DICTCN_FLAG");
+    objWindow.RemoveToolButton("main", "KMDictcnButton");
+    objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
+    // 
+    var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
+    var objDoc = objApp.Window.CurrentDocument;
+    var pNote_title = strRead + "(" + (objDoc.ReadCount-1) + ")";
+    //
+    switch (objDoc.ParamValue("Rate")) {
+    case "1":
+        pNote_title = pNote_title + "|★☆☆☆☆";
+        break;
+    case "2":
+        pNote_title = pNote_title + "|★★☆☆☆";
+        break;
+    case "3":
+        pNote_title = pNote_title + "|★★★☆☆";
+        break;
+    case "4":
+        pNote_title = pNote_title + "|★★★★☆";
+        break;
+    case "5":
+        pNote_title = pNote_title + "|★★★★★";
+        break;
+    default:
+        break;
+    }
+    objDB.Meta("TEST","MSG_500") = pNote_title;
+    objWindow.RemoveToolButton("main", "KMHelperExButton");
+    objWindow.AddToolButton("main", "KMHelperExButton", "【" + pNote_title + "】", "", "OnKMHelperExButtonClicked");
+}
 
 /*
 获得所有的标签名称数组
@@ -1525,6 +1602,7 @@ function KMOnHtmlDocumentComplete(doc) {
     if (objWindow.CurrentDocument != null) {
         UpdateButtonStatus();
     }
+    KMCheckDictcn();
 }
 
 
@@ -1657,40 +1735,6 @@ function KMOnDocumentBeforeClose(objHtmlDocument, objWizDocument) {
 
 function KMOnDocumentBeforeChange(objHtmlDocument, objWizDocumentOld, objWizDocumentNew) {
     KMSaveDocument(objHtmlDocument, objWizDocumentOld);
-}
-
-function UpdateButtonStatus() {
-    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
-    var languageFileName = pluginPath + "plugin.ini";
-    var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
-    
-    var objDoc = objApp.Window.CurrentDocument;
-    
-    var objDB = objApp.Database;
-    var pNote_title = strRead + "(" + (objDoc.ReadCount-1) + ")";
-    
-    switch (objDoc.ParamValue("Rate")) {
-    case "1":
-        pNote_title = pNote_title + "|★☆☆☆☆";
-        break;
-    case "2":
-        pNote_title = pNote_title + "|★★☆☆☆";
-        break;
-    case "3":
-        pNote_title = pNote_title + "|★★★☆☆";
-        break;
-    case "4":
-        pNote_title = pNote_title + "|★★★★☆";
-        break;
-    case "5":
-        pNote_title = pNote_title + "|★★★★★";
-        break;
-    default:
-        break;
-    }
-    objDB.Meta("TEST","MSG_500") = pNote_title;
-    objWindow.RemoveToolButton("main", "KMHelperExButton");
-    objWindow.AddToolButton("main", "KMHelperExButton", "【" + pNote_title + "】", "", "OnKMHelperExButtonClicked");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2827,6 +2871,37 @@ function KMContentGetName(str) {
 ////设置为目录项代码结束
 ////=================================================================================
 ////////////////////////////////////////////////////////////////////////////////
+
+////
+////Dict.cn >> begin
+////=================================================================================
+////////////////////////////////////////////////////////////////////////////////
+function DictcnAdd2Doc() {
+    var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;
+    //
+    var objScript1 = objHtmlDocument.createElement("<SCRIPT language='javascript' id='KMDictcn_Script1'></SCRIPT>");
+    objScript1.setAttribute('src','http://dict.cn/hc/');
+    objHtmlDocument.body.appendChild(objScript1);
+    //
+    var objScript2 = objHtmlDocument.createElement("<SCRIPT language='javascript' id='KMDictcn_Script2'></SCRIPT>");
+    objScript2.text = "dictInit();";
+    objHtmlDocument.body.appendChild(objScript2);
+}
+
+function KMCheckDictcn(){
+    var objDatabase = objApp.Database;
+    if (objDatabase.Meta("wizhelp_parm","Dictcn_FLAG") == "1") {
+        DictcnAdd2Doc();
+    }
+}
+////
+////Dict.cn >> end
+////=================================================================================
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 var objApp = WizExplorerApp;
 var objDB = objApp.Database;
 Main();

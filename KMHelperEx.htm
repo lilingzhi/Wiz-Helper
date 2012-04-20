@@ -6,18 +6,22 @@
 </head>
 <body>
 	<table cellspacing="0px" sytle="width:100%;">
-        <tr>
+<!--         <tr>
             <td colspan="2" style="border-bottom-style:groove;" nowrap="nowrap">
     			<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' >
     			<label id='strSyntax'>Syntax highlight</label>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;
                 <input id='chkSmarttag' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setSMARTTAG_FLAG()' >
                 <label id='strHelper'>Wizhelper</label> 
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;
                 <input id='chkAltkey' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setALTKEY_FLAG()' >
-                <label id='strAltkey'>Alt down needed</label> 
+                <label id='strAltkey'>Alt down needed</label>
+                &nbsp;&nbsp;
+                <input id='chkDictcn' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setDICTCN_FLAG()' >
+                <label id='strDictcn'>Dict.cn</label>
+                <p/>
             </td>
-    	</tr>
+    	</tr> -->
 		<tr>
 			<td nowrap="nowrap"><label id="strTitle">Title</label> :</td>
 			<td id="ivalue_document_title"></td>
@@ -489,6 +493,11 @@
                 chkAltkey.setAttribute("checked", "checked");
             else
                 chkAltkey.setAttribute("checked", "");
+            //
+            if (objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") == "1") 
+                chkDictcn.setAttribute("checked", "checked");
+            else
+                chkDictcn.setAttribute("checked", "");
         }
         // 切换维基语法高亮状态
         function setKEYWORD_FLAG() {
@@ -523,6 +532,18 @@
                 objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";
             }
         }
+        // 切换是否开启海词在线
+        function setDICTCN_FLAG() {
+            if (chkDictcn.checked) {
+                chkDictcn.setAttribute("checked", "checked");
+                objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "1";
+            }
+            else {
+                chkDictcn.setAttribute("checked", "");
+                objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "0";
+            }
+        }
+		//
 		//
 		function update_version() {
 			if (objDatabase.Meta("keyword_HL","keyword_flag").value != null || 
@@ -534,7 +555,7 @@
 			update_version();
 			resetRate();
 			AddInfoPage();
-			getFlags();
+			// getFlags();
 		}
 		function Main() {
 			initPage();
