@@ -10,7 +10,7 @@ body
     background-color: #fff;
     font-size: 9pt;
     margin: 0px;
-    padding: 1em;
+    padding: 0em;
     line-height: 1.5;
 }
 div
@@ -74,8 +74,10 @@ sup, sub
 }
 input, select, textarea, option
 {
-    font-family: inherit;
-    font-size: inherit;
+    font-family: Arial, Helvetica, Sans-serif;
+    color: black;
+    background-color: #fff;
+    font-size: 9pt;
     margin: 0;
     padding: 0;
 }

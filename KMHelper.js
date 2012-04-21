@@ -191,7 +191,7 @@ function OnKMTagsCloudButtonClicked() {
     //
     var rect = objWindow.GetToolButtonRect("main", "KMTagsCloudButton");
     var arr = rect.split(',');
-    objWindow.ShowSelectorWindow(cloudFileName, arr[0], arr[3], 600, 600, "");
+    objWindow.ShowSelectorWindow(cloudFileName, arr[0], arr[3], 620, 650, "");
 }
 
 function OnKMSyntaxStatusButtonClicked() { OnKMStatusButtonClicked("KEYWORD_FLAG"); }
@@ -2877,15 +2877,27 @@ function KMContentGetName(str) {
 ////=================================================================================
 ////////////////////////////////////////////////////////////////////////////////
 function DictcnAdd2Doc() {
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
     var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;
-    //
-    var objScript1 = objHtmlDocument.createElement("<SCRIPT language='javascript' id='KMDictcn_Script1'></SCRIPT>");
-    objScript1.setAttribute('src','http://dict.cn/hc/');
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var objScript1 = objHtmlDocument.createElement('script');
+    objScript1.setAttribute('src',pluginPath+'KMDictcn.js');
     objHtmlDocument.body.appendChild(objScript1);
     //
-    var objScript2 = objHtmlDocument.createElement("<SCRIPT language='javascript' id='KMDictcn_Script2'></SCRIPT>");
-    objScript2.text = "dictInit();";
-    objHtmlDocument.body.appendChild(objScript2);
+    // WizAlert(objHtmlDocument.compatMode);
+    // if (objHtmlDocument.compatMode == 'BackCompat') {
+    //     WizAlert('yes');
+    //     var htmlAll = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">\n';
+    //     if (objHtmlDocument.head) { htmlAll += objHtmlDocument.head.outerHTML; }
+    //     htmlAll += objHtmlDocument.body.outerHTML;
+    //     objHtmlDocument.write(htmlAll);
+    // }
+    // WizAlert(objHtmlDocument.compatMode);
+    //
+    //
+    // var objScript2 = objHtmlDocument.createElement('script');
+    // objScript2.text = "dictInit();";
+    // objHtmlDocument.body.appendChild(objScript2);
 }
 
 function KMCheckDictcn(){
@@ -2899,10 +2911,6 @@ function KMCheckDictcn(){
 ////=================================================================================
 ////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 var objApp = WizExplorerApp;
 var objDB = objApp.Database;
 Main();
-

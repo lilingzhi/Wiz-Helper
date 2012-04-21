@@ -23,6 +23,22 @@
             	</td>
     	</tr>  -->
 		<tr>
+			<td colspan="2" nowrap="nowrap" style="border-bottom-style:solid; border-width:thin; padding-bottom:10px;">
+				[&nbsp;<label id="strRead">Read</label>
+				(<span id="ivalue_document_readcount"></span>)&nbsp;]&nbsp;
+				<!-- <label id="strStars">Stars</label> : -->
+				<img style="vertical-align:middle;" id="rate1" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate2" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate3" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate4" src="km_star1.png" />
+				<img style="vertical-align:middle;" id="rate5" src="km_star1.png" />&nbsp; 
+				<a href="javascript:removeRate();">(X)</a>
+				&nbsp;&nbsp;
+				[&nbsp;<label id="strStyle">Style</label>
+				(&nbsp;<span id="ivalue_document_style"></span>&nbsp;)&nbsp;]
+			</td>
+		</tr>
+		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strTitle">Title</label> :</td>
 			<td id="ivalue_document_title"></td>
 		</tr>
@@ -40,34 +56,7 @@
 			    <img src="km_search.png" onclick="SearchByKeywords();"/>
             </td>
 		</tr>
-		<tr>
-			<td width="13%" nowrap="nowrap"><label id="strStars">Stars</label> :</td>
-			<td>
-				[ <label id="strRead">Read</label>
-				(<span id="ivalue_document_readcount"></span>) ]&nbsp;&nbsp;
-				<img style="vertical-align:middle;" id="rate1" src="km_star1.png" />
-				<img style="vertical-align:middle;" id="rate2" src="km_star1.png" />
-				<img style="vertical-align:middle;" id="rate3" src="km_star1.png" />
-				<img style="vertical-align:middle;" id="rate4" src="km_star1.png" />
-				<img style="vertical-align:middle;" id="rate5" src="km_star1.png" />&nbsp; 
-				<a href="javascript:removeRate();">(X)</a>
-			</td>
-		</tr>
-		<tr>
-			<td width="13%" nowrap="nowrap"><label id="strFolder">Folder</label> :</td>
-			<td id="ivalue_document_location"></td>
-		</tr>
-		<tr>
-			<td width="13%" nowrap="nowrap"><label id="strLocation">Address</label> :</td>
-			<td id="ivalue_document_url"></td>
-		</tr>
-		<tr>
-			<td width="13%" nowrap="nowrap">
-				<label id="strAttachments">Attachments</label>
-				(<span id="ivalue_document_attachments"></span>) :
-			</td>
-			<td ><div id="divAttachments" style="width:100%;"></div></td>
-		</tr>	
+
 		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strCreator">Created by</label> :</td>
 			<td id="ivalue_document_owner"></td>
@@ -80,13 +69,20 @@
 			<td width="13%" nowrap="nowrap"><label id="strModified">Modified at</label> :</td>
 			<td id="ivalue_dt_modified"></td>
 		</tr>
-<!-- 		<tr>
-			<td width="13%" nowrap="nowrap"><label id="strRead">Read</label> :</td>
-			<td id="ivalue_document_readcount"></td>
-		</tr> -->
 		<tr>
-			<td width="13%" nowrap="nowrap"><label id="strStyle">Style</label> :</td>
-			<td id="ivalue_document_style">N/A</td>
+			<td width="13%" nowrap="nowrap">
+				<label id="strAttachments">Attachments</label>
+				(<span id="ivalue_document_attachments"></span>) :
+			</td>
+			<td ><div id="divAttachments" style="width:100%;"></div></td>
+		</tr>	
+		<tr>
+			<td width="13%" nowrap="nowrap"><label id="strLocation">Address</label> :</td>
+			<td id="ivalue_document_url"></td>
+		</tr>
+		<tr  >
+			<td width="13%" nowrap="nowrap"><label id="strFolder">Folder</label> :</td>
+			<td id="ivalue_document_location"></td>
 		</tr>
 		<tr>
 			<td width="10%" nowrap="nowrap" style="border-top-style:solid; border-width:thin;">
@@ -121,33 +117,33 @@
 		var objApp = window.external; //WizExplorerApp
 		var objDatabase = objApp.Database;
 		var objWindow = objApp.Window;
-		var objDoc = objWindow.CurrentDocument; //èŽ·å¾—å½“å‰æ­£åœ¨æµè§ˆçš„Wizæ–‡æ¡£(WizDocument)
-		var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;	//èŽ·å¾—å½“å‰æ­£åœ¨æµè§ˆçš„htmlç½‘é¡µçš„documentå¯¹è±¡(IHTMLDocument2)
+		var objDoc = objWindow.CurrentDocument; //»ñµÃµ±Ç°ÕýÔÚä¯ÀÀµÄWizÎÄµµ(WizDocument)
+		var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;	//»ñµÃµ±Ç°ÕýÔÚä¯ÀÀµÄhtmlÍøÒ³µÄdocument¶ÔÏó(IHTMLDocument2)
 		//
-		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //èŽ·å¾—æ’ä»¶çš„è·¯å¾„
-		var languangeFileName = pluginPath + "plugin.ini";  //è¯­è¨€æ–‡ä»¶
+		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //»ñµÃ²å¼þµÄÂ·¾¶
+		var languangeFileName = pluginPath + "plugin.ini";  //ÓïÑÔÎÄ¼þ
 		//
-		textKeywords.value = objDoc.Keywords;   //æ˜¾ç¤ºå½“å‰æ–‡æ¡£çš„å…³é”®å­—
-		textAuthor.value = objDoc.Author;	   //æ˜¾ç¤ºå½“å‰æ–‡æ¡£çš„ä½œè€…
+		textKeywords.value = objDoc.Keywords;   //ÏÔÊ¾µ±Ç°ÎÄµµµÄ¹Ø¼ü×Ö
+		textAuthor.value = objDoc.Author;	   //ÏÔÊ¾µ±Ç°ÎÄµµµÄ×÷Õß
 		//
 		objApp.LocalizeHtmlDocument(languangeFileName, document);
 		//
 		function textKeywords_onchange() {
-			objDoc.Keywords = textKeywords.value;   //ä¿å­˜å…³é”®å­—
+			objDoc.Keywords = textKeywords.value;   //±£´æ¹Ø¼ü×Ö
 		}
 		//
 		function textAuthor_onchange() {
-			objDoc.Author = textAuthor.value;	   //ä¿å­˜ä½œè€…
+			objDoc.Author = textAuthor.value;	   //±£´æ×÷Õß
 		}
 		//
-		// å…¨å±€å˜é‡ï¼Œä¿å­˜ç­›é€‰ç»“æžœï¼ˆä¸è€ƒè™‘å½“å‰æ˜¯å¦åœ¨å½“å‰æ–‡ä»¶å¤¹ï¼‰
+		// È«¾Ö±äÁ¿£¬±£´æÉ¸Ñ¡½á¹û£¨²»¿¼ÂÇµ±Ç°ÊÇ·ñÔÚµ±Ç°ÎÄ¼þ¼Ð£©
         var colorSelTags = "#FFFF00";
 		var listDocs = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
 		//
-		// èŽ·å–å½“å‰é€‰ä¸­æ–‡ä»¶å¤¹ä¸‹åœ°æ–‡ä»¶ GUID åˆ—è¡¨
-		var objCurFolder = objApp.Window.CategoryCtrl.SelectedFolder; //å½“å‰é€‰ä¸­çš„æ–‡ä»¶å¤¹
+		// »ñÈ¡µ±Ç°Ñ¡ÖÐÎÄ¼þ¼ÐÏÂµØÎÄ¼þ GUID ÁÐ±í
+		var objCurFolder = objApp.Window.CategoryCtrl.SelectedFolder; //µ±Ç°Ñ¡ÖÐµÄÎÄ¼þ¼Ð
 		var guidDocsInCurFolder = "";
-		if (objCurFolder != null) { //å¦‚æžœæ²¡æœ‰é€‰ä¸­
+		if (objCurFolder != null) { //Èç¹ûÃ»ÓÐÑ¡ÖÐ
 			addChildDocs(objCurFolder);
 		}
 		function addChildDocs(ParentFolder) {
@@ -165,7 +161,7 @@
 			}
 		}
 		//
-		// èŽ·å¾—å«æœ‰æ–‡ä»¶çš„æ ‡ç­¾åŠå…¶æ–‡æ¡£æ•°é‡
+		// »ñµÃº¬ÓÐÎÄ¼þµÄ±êÇ©¼°ÆäÎÄµµÊýÁ¿
 		var arrayTags = objDatabase.GetAllTagsDocumentCount(0);
 		var tagsdata = (new VBArray(arrayTags)).toArray();
 		var listTagsWithFile = [];
@@ -175,9 +171,9 @@
 			var arr = line.split('=');
 			if (arr.length != 2)
 				continue;
-			var guid = arr[1];  //æ–‡æ¡£guid
-			var count = parseInt(arr[0]);   //æ–‡æ¡£æ•°é‡
-			var objTag = objDatabase.TagFromGUID(guid);  //é€šè¿‡guidèŽ·å¾—æ ‡ç­¾å¯¹è±¡
+			var guid = arr[1];  //ÎÄµµguid
+			var count = parseInt(arr[0]);   //ÎÄµµÊýÁ¿
+			var objTag = objDatabase.TagFromGUID(guid);  //Í¨¹ýguid»ñµÃ±êÇ©¶ÔÏó
 			var tagData = {};
 				tagData.tag = objTag;
 				tagData.GUID = guid;
@@ -223,7 +219,7 @@
 			return result;
 		}
 		function getBytesLength(str) {
-			// åœ¨GBKç¼–ç é‡Œï¼Œé™¤äº†ASCIIå­—ç¬¦ï¼Œå…¶å®ƒéƒ½å ä¸¤ä¸ªå­—ç¬¦å®½
+			// ÔÚGBK±àÂëÀï£¬³ýÁËASCII×Ö·û£¬ÆäËü¶¼Õ¼Á½¸ö×Ö·û¿í
 			return str.replace(/[^\x00-\xff]/g, 'xx').length;
 		}
 		//
@@ -241,7 +237,7 @@
 		}
 		//
 		function listTags (){
-			// å½“å‰æ–‡æ¡£å«æœ‰æ ‡ç­¾æ—¶ï¼Œæ˜¾ç¤º checkbox ã€‚
+			// µ±Ç°ÎÄµµº¬ÓÐ±êÇ©Ê±£¬ÏÔÊ¾ checkbox ¡£
 			var objTags = objDoc.Tags;
 			if ( objTags.Count > 0){
 				var  html_check = "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkUnionset' onclick='ListDocsByTags()' />" + objApp.LoadStringFromFile(languangeFileName, "strUnionset") + " &nbsp;&nbsp;";
@@ -250,7 +246,7 @@
 				divCheckbox.innerHTML = html_check;
 				// divCheckbox.style.cssText="border-top-style:groove; border-bottom-style:groove; border-width:thin;";
 			}
-			// å½“å‰æ–‡æ¡£å«æœ‰æ ‡ç­¾åˆ—å‡ºæ‰€æœ‰æ ‡ç­¾ã€‚
+			// µ±Ç°ÎÄµµº¬ÓÐ±êÇ©ÁÐ³öËùÓÐ±êÇ©¡£
 			if ( objTags.Count > 0){
 				var html = "";
 				for (var i = 0; i < objTags.Count; i++) {
@@ -274,7 +270,7 @@
 			}
 		}
 		//
-		//å°†æ–‡ä»¶æŒ‰ç…§åç§°æŽ’åºï¼Œæ–¹ä¾¿æŸ¥æ‰¾
+		//½«ÎÄ¼þ°´ÕÕÃû³ÆÅÅÐò£¬·½±ã²éÕÒ
 		function CompareDoc(a, b) {
 			var n1 = a.Title.toLowerCase();
 			var n2 = b.Title.toLowerCase();
@@ -285,7 +281,7 @@
 				return -1;
 			return 0;
 		}
-		// ç‚¹å‡»æ ‡ç­¾ï¼Œé€šè¿‡ tag guid èŽ·å¾—åˆ—å‡ºå¯¹åº”çš„æ–‡æ¡£
+		// µã»÷±êÇ©£¬Í¨¹ý tag guid »ñµÃÁÐ³ö¶ÔÓ¦µÄÎÄµµ
 		function ListDocsByTagGUID(guid) {
             var aTag = document.getElementById(guid);
             if ( aTag.isSelected == "0" ){
@@ -344,9 +340,9 @@
 			ShowDocList();
 		}
 		//
-		// åˆ—å‡ºç­›é€‰å‡ºçš„æ–‡æ¡£åˆ—è¡¨
+		// ÁÐ³öÉ¸Ñ¡³öµÄÎÄµµÁÐ±í
 		function ShowDocList(){
-			// åˆ—å‡ºç­›é€‰å‡ºçš„æ–‡æ¡£åˆ—è¡¨
+			// ÁÐ³öÉ¸Ñ¡³öµÄÎÄµµÁÐ±í
 			if (checkCurFolder.checked && guidDocsInCurFolder!=""){
 				var listDocsInCurFolder = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
 				for ( i=0; i<listDocs.Count; i++){
@@ -360,7 +356,7 @@
 			else{
 				listDocs_tmp =listDocs;
 			}
-			// å¯¹æ–‡æ¡£æŒ‰æ ‡é¢˜è¿›è¡ŒæŽ’åº
+			// ¶ÔÎÄµµ°´±êÌâ½øÐÐÅÅÐò
 			var listDoc = [];
 			for (var i=0; i<listDocs_tmp.Count; i++){
 				var doci = listDocs_tmp.Item(i);
@@ -374,7 +370,7 @@
 			for (var i=0; i<listDoc.length; i++){
 				listDocs_plt.Add(listDoc[i].objDoc);
 			}
-			// è¾“å‡ºæ–‡æ¡£åˆ—è¡¨
+			// Êä³öÎÄµµÁÐ±í
 			var html_files = "<p> ";
 			for (var i=0; i<listDocs_plt.Count; i++){
 				var doci = listDocs_plt.Item(i);
@@ -387,9 +383,9 @@
 			divStatus.innerHTML = listDocs_plt.Count + " files are matching!"
 		}
 		//
-		// åœ¨æ–°çª—å£ä¸­æ‰“å¼€é€‰ä¸­æ–‡ä»¶
+		// ÔÚÐÂ´°¿ÚÖÐ´ò¿ªÑ¡ÖÐÎÄ¼þ
 		function OpenDocumentByGUID(guid) {
-			//é€šè¿‡æ–‡æ¡£guidæ˜¾ç¤ºæ–‡æ¡£
+			//Í¨¹ýÎÄµµguidÏÔÊ¾ÎÄµµ
 			var doc = null;
 			try {
 				doc = objDatabase.DocumentFromGUID(guid);
@@ -399,12 +395,12 @@
 			}
 			if (!doc)
 				return;
-			//åœ¨Wizé‡Œé¢æ‰“å¼€è¿™ä¸ªæ–‡æ¡£ã€‚ç¬¬äºŒä¸ªå‚æ•°è¡¨ç¤ºåœ¨æ–°çª—å£æ‰“å¼€
+			//ÔÚWizÀïÃæ´ò¿ªÕâ¸öÎÄµµ¡£µÚ¶þ¸ö²ÎÊý±íÊ¾ÔÚÐÂ´°¿Ú´ò¿ª
 			objWindow.ViewDocument(doc, true);
 		}
 		//
 		/*
-		é€šè¿‡å…³é”®å­—æœç´¢ç›¸å…³æ–‡æ¡£ï¼Œæ˜¾ç¤ºåœ¨æ–‡æ¡£çª—å£ä¸­ã€‚æ³¨ï¼šç›®å‰æ²¡æœ‰å°†å…³é”®å­—è¿›è¡Œåˆ†éš”ï¼Œè¿™æ ·ä¼šæœ‰ç¼ºé™·ã€‚
+		Í¨¹ý¹Ø¼ü×ÖËÑË÷Ïà¹ØÎÄµµ£¬ÏÔÊ¾ÔÚÎÄµµ´°¿ÚÖÐ¡£×¢£ºÄ¿Ç°Ã»ÓÐ½«¹Ø¼ü×Ö½øÐÐ·Ö¸ô£¬ÕâÑù»áÓÐÈ±ÏÝ¡£
 		*/
 		function SearchByKeywords() {
 			var keywords = textKeywords.value;
@@ -423,7 +419,7 @@
 			}
 		}
 		/*
-		é€šè¿‡ä½œè€…æœç´¢ç›¸å…³æ–‡æ¡£ï¼Œæ˜¾ç¤ºåœ¨æ–‡æ¡£çª—å£ä¸­ã€‚æ³¨ï¼šç›®å‰æ²¡æœ‰å°†ä½œè€…è¿›è¡Œåˆ†éš”ï¼Œè¿™æ ·ä¼šæœ‰ç¼ºé™·ã€‚
+		Í¨¹ý×÷ÕßËÑË÷Ïà¹ØÎÄµµ£¬ÏÔÊ¾ÔÚÎÄµµ´°¿ÚÖÐ¡£×¢£ºÄ¿Ç°Ã»ÓÐ½«×÷Õß½øÐÐ·Ö¸ô£¬ÕâÑù»áÓÐÈ±ÏÝ¡£
 		*/
 		function SearchByAuthor() {
 			var author = textAuthor.value;
@@ -431,7 +427,7 @@
 				return false;
 			//
 			try {
-				author = author.replace(/\'/g, "''"); // è½¬ä¹‰
+				author = author.replace(/\'/g, "''"); // ×ªÒå
 				var sql = "document_author like '%" + author + "%'";
 				var documents = objDatabase.DocumentsFromSQL(sql);
 				if (documents != null) {
@@ -443,8 +439,8 @@
 		}
 		//
 		/*
-		æ˜Ÿæ ‡åŠŸèƒ½ã€‚æˆ‘ä»¬å°†æ˜Ÿæ ‡æ•°æ®ä¿å­˜åˆ°æ–‡æ¡£çš„å‚æ•°é‡Œé¢ï¼Œå¦‚ä¸‹é¢çš„getDocRateå’ŒsetDocRateæ–¹æ³•ã€‚
-		æ–‡æ¡£å‚æ•°å¯ä»¥æœ‰ä»»æ„æ•°é‡ï¼Œå¯ä»¥å’ŒæœåŠ¡å™¨è¿›è¡ŒåŒæ­¥ã€‚
+		ÐÇ±ê¹¦ÄÜ¡£ÎÒÃÇ½«ÐÇ±êÊý¾Ý±£´æµ½ÎÄµµµÄ²ÎÊýÀïÃæ£¬ÈçÏÂÃæµÄgetDocRateºÍsetDocRate·½·¨¡£
+		ÎÄµµ²ÎÊý¿ÉÒÔÓÐÈÎÒâÊýÁ¿£¬¿ÉÒÔºÍ·þÎñÆ÷½øÐÐÍ¬²½¡£
 		*/
 		//
 		function getDocRate() {
@@ -532,7 +528,7 @@
 			textNewTags.value = objDoc.TagsText;
 		}
 		//
-		// è¯»å–å½“å‰ç»´åŸºè¯­æ³•é«˜äº®, wizåŠ©æ‰‹é«˜äº®, å¿…é¡»æŒ‰ä¸‹Altè§¦å‘Wizhelper çŠ¶æ€
+		// ¶ÁÈ¡µ±Ç°Î¬»ùÓï·¨¸ßÁÁ, wizÖúÊÖ¸ßÁÁ, ±ØÐë°´ÏÂAlt´¥·¢Wizhelper ×´Ì¬
         function getFlags() {
             if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") == "1")
                 chkKeyword.setAttribute("checked", "checked");
@@ -554,7 +550,7 @@
             else
                 chkDictcn.setAttribute("checked", "");
         }
-        // åˆ‡æ¢ç»´åŸºè¯­æ³•é«˜äº®çŠ¶æ€
+        // ÇÐ»»Î¬»ùÓï·¨¸ßÁÁ×´Ì¬
         function setKEYWORD_FLAG() {
             if (chkKeyword.checked) {
                 chkKeyword.setAttribute("checked", "checked");
@@ -565,7 +561,7 @@
                 objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "0";
             }
         }
-        // åˆ‡æ¢wizåŠ©æ‰‹é«˜äº®çŠ¶æ€
+        // ÇÐ»»wizÖúÊÖ¸ßÁÁ×´Ì¬
         function setSMARTTAG_FLAG() {
             if (chkSmarttag.checked) {
                 chkSmarttag.setAttribute("checked", "checked");
@@ -576,7 +572,7 @@
                 objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "0";
             }
         }
-        // åˆ‡æ¢æ˜¯å¦æŒ‰ä¸‹Alté”®æ‰è§¦å‘Wizhelper
+        // ÇÐ»»ÊÇ·ñ°´ÏÂAlt¼ü²Å´¥·¢Wizhelper
         function setALTKEY_FLAG() {
             if (chkAltkey.checked) {
                 chkAltkey.setAttribute("checked", "checked");
@@ -587,7 +583,7 @@
                 objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";
             }
         }
-        // åˆ‡æ¢æ˜¯å¦å¼€å¯æµ·è¯åœ¨çº¿
+        // ÇÐ»»ÊÇ·ñ¿ªÆôº£´ÊÔÚÏß
         function setDICTCN_FLAG() {
             if (chkDictcn.checked) {
                 chkDictcn.setAttribute("checked", "checked");
