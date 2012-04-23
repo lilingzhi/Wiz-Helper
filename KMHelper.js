@@ -21,6 +21,28 @@ var g_KMMousePos = { x: 0, y: 0};
 
 RegKMButton();
 
+// read Wizhelper global settings
+function KMSettings(strKey) {
+    var objDatabase = objApp.Database;
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var languageFileName = pluginPath + "plugin.ini";
+    //
+    var fso, filehandle, strValue;
+    fso = objApp.CreateActiveXObject("Scripting.FileSystemObject");
+    filehandle = fso.OpenTextFile(languageFileName, 1, false, 0);
+    regErr = /^([^\s]+)\s*[=]\s*(.*)/;
+    while (!filehandle.AtEndOfStream) {
+        var ss = filehandle.ReadLine();
+        if (regErr.test(ss) && strKey == RegExp.$1) {
+            strValue = RegExp.$2;
+            break;
+        }
+    }
+    filehandle.Close();
+    fso = null;
+    return strValue;
+}
+
 function KMGetFSOObject() {
     if (!g_KMHelperFSO) {
         g_KMHelperFSO = objApp.CreateActiveXObject("Scripting.FileSystemObject");
@@ -149,11 +171,15 @@ function RegKMButton() {
     objWindow.AddToolButton("document", "KMHelperButton", buttonWizhelper, "", "OnKMHelperButtonClicked");
     objWindow.AddToolButton("document", "KMNoteplusButton", buttonNoteplus, "", "OnNotetakingButtonClicked");
     objWindow.AddToolButton("main", "KMTagsCloudButton", buttonTagsCloud, "", "OnKMTagsCloudButtonClicked");
-    objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
-    objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
-    objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
-    objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
-    // objWindow.AddToolButton("main", "KMHelperExButton", "¡¾Status¡¿", "", "OnKMHelperExButtonClicked");
+    if (KMSettings("KMButtonsInMainMenu") == "1") {
+        objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
+        objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
+        objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
+        objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
+    }
+    else {
+        objWindow.AddToolButton("main", "KMHelperExButton", "¡¾Status¡¿", "", "OnKMHelperExButtonClicked");    
+    }
 }
 
 function OnKMHelperButtonClicked() {
@@ -214,48 +240,51 @@ function UpdateButtonStatus() {
     var languageFileName = pluginPath + "plugin.ini";
     var objDB = objApp.Database;
     //
-    var buttonSyntax = objApp.LoadStringFromFile(languageFileName, "buttonSyntax") + ":" + objDB.Meta("wizhelp_parm","KEYWORD_FLAG");
-    objWindow.RemoveToolButton("main", "KMSyntaxButton");
-    objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
-    //
-    var buttonHelper = objApp.LoadStringFromFile(languageFileName, "buttonHelper") + ":" + objDB.Meta("wizhelp_parm","SMARTTAG_FLAG");
-    objWindow.RemoveToolButton("main", "KMHelperButton");
-    objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
-    //
-    var buttonAltkey = objApp.LoadStringFromFile(languageFileName, "buttonAltkey") + ":" + objDB.Meta("wizhelp_parm","ALTKEY_FLAG");
-    objWindow.RemoveToolButton("main", "KMAltkeyButton");
-    objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
-    //
-    var buttonDictcn = objApp.LoadStringFromFile(languageFileName, "buttonDictcn") + ":" + objDB.Meta("wizhelp_parm","DICTCN_FLAG");
-    objWindow.RemoveToolButton("main", "KMDictcnButton");
-    objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
-    // 
-    var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
-    var objDoc = objApp.Window.CurrentDocument;
-    var pNote_title = strRead + "(" + (objDoc.ReadCount-1) + ")";
-    //
-    switch (objDoc.ParamValue("Rate")) {
-    case "1":
-        pNote_title = pNote_title + "|¡ï¡î¡î¡î¡î";
-        break;
-    case "2":
-        pNote_title = pNote_title + "|¡ï¡ï¡î¡î¡î";
-        break;
-    case "3":
-        pNote_title = pNote_title + "|¡ï¡ï¡ï¡î¡î";
-        break;
-    case "4":
-        pNote_title = pNote_title + "|¡ï¡ï¡ï¡ï¡î";
-        break;
-    case "5":
-        pNote_title = pNote_title + "|¡ï¡ï¡ï¡ï¡ï";
-        break;
-    default:
-        break;
+    if (KMSettings("KMButtonsInMainMenu") == "1") {
+        var buttonSyntax = objApp.LoadStringFromFile(languageFileName, "buttonSyntax") + ":" + objDB.Meta("wizhelp_parm","KEYWORD_FLAG");
+        objWindow.RemoveToolButton("main", "KMSyntaxButton");
+        objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
+        //
+        var buttonHelper = objApp.LoadStringFromFile(languageFileName, "buttonHelper") + ":" + objDB.Meta("wizhelp_parm","SMARTTAG_FLAG");
+        objWindow.RemoveToolButton("main", "KMHelperButton");
+        objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
+        //
+        var buttonAltkey = objApp.LoadStringFromFile(languageFileName, "buttonAltkey") + ":" + objDB.Meta("wizhelp_parm","ALTKEY_FLAG");
+        objWindow.RemoveToolButton("main", "KMAltkeyButton");
+        objWindow.AddToolButton("main", "KMAltkeyButton", buttonAltkey, "", "OnKMAltkeyStatusButtonClicked");
+        //
+        var buttonDictcn = objApp.LoadStringFromFile(languageFileName, "buttonDictcn") + ":" + objDB.Meta("wizhelp_parm","DICTCN_FLAG");
+        objWindow.RemoveToolButton("main", "KMDictcnButton");
+        objWindow.AddToolButton("main", "KMDictcnButton", buttonDictcn, "", "OnKMDictcnStatusButtonClicked");
     }
-    objDB.Meta("TEST","MSG_500") = pNote_title;
-    objWindow.RemoveToolButton("main", "KMHelperExButton");
-    objWindow.AddToolButton("main", "KMHelperExButton", "¡¾" + pNote_title + "¡¿", "", "OnKMHelperExButtonClicked");
+    else {
+        var strRead = objApp.LoadStringFromFile(languageFileName, "strRead");
+        var objDoc = objApp.Window.CurrentDocument;
+        var pNote_title = strRead + "(" + (objDoc.ReadCount-1) + ")";
+        //
+        switch (objDoc.ParamValue("Rate")) {
+        case "1":
+            pNote_title = pNote_title + "|¡ï¡î¡î¡î¡î";
+            break;
+        case "2":
+            pNote_title = pNote_title + "|¡ï¡ï¡î¡î¡î";
+            break;
+        case "3":
+            pNote_title = pNote_title + "|¡ï¡ï¡ï¡î¡î";
+            break;
+        case "4":
+            pNote_title = pNote_title + "|¡ï¡ï¡ï¡ï¡î";
+            break;
+        case "5":
+            pNote_title = pNote_title + "|¡ï¡ï¡ï¡ï¡ï";
+            break;
+        default:
+            break;
+        }
+        objDB.Meta("TEST","MSG_500") = pNote_title;
+        objWindow.RemoveToolButton("main", "KMHelperExButton");
+        objWindow.AddToolButton("main", "KMHelperExButton", "¡¾" + pNote_title + "¡¿", "", "OnKMHelperExButtonClicked");
+    }
 }
 
 /*

@@ -5,23 +5,29 @@
 <link rel="stylesheet" type="text/css" href="base_style.css"/> 
 </head>
 <body>
+	<table cellspacing="0px" sytle="width:100%;" id="trButtonToggles" style="display:none;" margin=10px;>
+		<tr>
+			<td width="140" nowrap="nowrap">
+				<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' >
+				<label id='strSyntax'>Syntax highlight</label>
+			</td>
+			<td width="140" nowrap="nowrap">
+				<input id='chkSmarttag' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setSMARTTAG_FLAG()' >
+				<label id='strHelper'>Wizhelper</label>
+			</td>
+		</tr>
+		<tr>
+			<td width="140" nowrap="nowrap" style="border-bottom-style:groove;">
+				<input id='chkAltkey' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setALTKEY_FLAG()' >
+				<label id='strAltkey'>Alt down needed</label>
+			</td>
+			<td width="140" nowrap="nowrap" style="border-bottom-style:groove;">
+				<input id='chkDictcn' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setDICTCN_FLAG()' >
+				<label id='strDictcn'>Dict.cn</label>
+			</td>
+		</tr>
+	</table>
 	<table cellspacing="0px" sytle="width:100%;">
-<!--         <tr>
-            <td colspan="2" style="border-bottom-style:groove;" width="10%" nowrap="nowrap">
-    			<input id='chkKeyword' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setKEYWORD_FLAG()' >
-    			<label id='strSyntax'>Syntax highlight</label>
-                &nbsp;&nbsp;
-                <input id='chkSmarttag' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setSMARTTAG_FLAG()' >
-                <label id='strHelper'>Wizhelper</label> 
-                &nbsp;&nbsp;
-                <input id='chkAltkey' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setALTKEY_FLAG()' >
-                <label id='strAltkey'>Alt down needed</label>
-                &nbsp;&nbsp;
-                <input id='chkDictcn' style='VERTICAL-ALIGN: middle' type='checkbox' onclick='setDICTCN_FLAG()' >
-                <label id='strDictcn'>Dict.cn</label>
-                <p/>
-            	</td>
-    	</tr>  -->
 		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strTitle">Title</label> :</td>
 			<td id="ivalue_document_title"></td>
@@ -29,16 +35,16 @@
 		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strAuthor">Author</label> :</td>
 			<td id="ivalue_document_author">
-                <input id="textAuthor" type="text" onchange="return textAuthor_onchange()" style="width: 180px;" />
-    			<img src="km_search.png" onclick="SearchByKeywords();" />
-            </td>
+				<input id="textAuthor" type="text" onchange="return textAuthor_onchange()" style="width: 180px;" />
+				<img src="km_search.png" onclick="SearchByKeywords();" />
+			</td>
 		</tr>
 		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strKeywords">Keywords</label> :</td>
 			<td id="ivalue_document_keyword">
-                <input id="textKeywords" type="text" onchange="return textKeywords_onchange()" style="width: 180px;" />
-			    <img src="km_search.png" onclick="SearchByKeywords();"/>
-            </td>
+				<input id="textKeywords" type="text" onchange="return textKeywords_onchange()" style="width: 180px;" />
+				<img src="km_search.png" onclick="SearchByKeywords();"/>
+			</td>
 		</tr>
 		<tr>
 			<td width="13%" nowrap="nowrap"><label id="strStars">Stars</label> :</td>
@@ -93,25 +99,25 @@
 				<label id="strTags">Tags</label> :
 			</td>
 			<td style="border-top-style:solid; border-width:thin;">
-                <input id="textNewTags" type="text" style="width: 200px;" onblur="return textNewTags_onblur()" onkeypress="textNewTags_onEnterPress()" onkeydown="textNewTags_onEnterPress()" />
+				<input id="textNewTags" type="text" style="width: 200px;" onblur="return textNewTags_onblur()" onkeypress="textNewTags_onEnterPress()" onkeydown="textNewTags_onEnterPress()" />
 				<div id="divTags" style="width:100%;"></div>
 			</td>
 		</tr>
 		<tr>
-            <td colspan="2" nowrap="nowrap">
+			<td colspan="2" nowrap="nowrap">
 				<div id="divCheckbox" style="width:100%;"></div>
-            </td>
-        </tr>
+			</td>
+		</tr>
  		<tr>
-            <td colspan="2" nowrap="nowrap" style="border-top-style:solid; border-width:thin;">
+			<td colspan="2" nowrap="nowrap" style="border-top-style:solid; border-width:thin;">
 				<div id="divStatus" style="width:100%;"></div>
-            </td>
-        </tr>       
+			</td>
+		</tr>	   
  		<tr>
-            <td colspan="2" nowrap="nowrap">
+			<td colspan="2" nowrap="nowrap">
 				<div id="divFiles" style="width:100%;"></div>
-            </td>
-        </tr>       
+			</td>
+		</tr>	   
 	</table>
 
 
@@ -125,12 +131,30 @@
 		var objHtmlDocument = objWindow.CurrentDocumentHtmlDocument;	//获得当前正在浏览的html网页的document对象(IHTMLDocument2)
 		//
 		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //获得插件的路径
-		var languangeFileName = pluginPath + "plugin.ini";  //语言文件
+		var languageFileName = pluginPath + "plugin.ini";  //语言文件
 		//
 		textKeywords.value = objDoc.Keywords;   //显示当前文档的关键字
 		textAuthor.value = objDoc.Author;	   //显示当前文档的作者
 		//
-		objApp.LocalizeHtmlDocument(languangeFileName, document);
+		objApp.LocalizeHtmlDocument(languageFileName, document);
+		//
+		// read Wizhelper global settings
+	    function KMSettings(strKey) {
+	    	var fso, filehandle, strValue;
+	    	fso = objApp.CreateActiveXObject("Scripting.FileSystemObject");
+	    	filehandle = fso.OpenTextFile(languageFileName, 1, false, 0);
+	    	regErr = /^([^\s]+)\s*[=]\s*(.*)/;
+	    	while (!filehandle.AtEndOfStream) {
+	    		var ss = filehandle.ReadLine();
+	    		if (regErr.test(ss) && strKey == RegExp.$1) {
+		    		strValue = RegExp.$2;
+		    		break;
+	    		}
+	    	}
+	    	filehandle.Close();
+	    	fso = null;
+	    	return strValue;
+	    }
 		//
 		function textKeywords_onchange() {
 			objDoc.Keywords = textKeywords.value;   //保存关键字
@@ -141,7 +165,7 @@
 		}
 		//
 		// 全局变量，保存筛选结果（不考虑当前是否在当前文件夹）
-        var colorSelTags = "#FFFF00";
+		var colorSelTags = "#FFFF00";
 		var listDocs = objApp.CreateWizObject("WizKMCore.WizDocumentCollection");
 		//
 		// 获取当前选中文件夹下地文件 GUID 列表
@@ -193,16 +217,16 @@
 			}
 		}
 		//
-        function textNewTags_onblur() {
-            var text = textNewTags.value;
-            if (text == "" || text == null)
-                return;
-            if (objDoc) {
-                objDoc.TagsText = text;
-                textNewTags.value = objDoc.TagsText;
-                listTags();
-            }
-        }
+		function textNewTags_onblur() {
+			var text = textNewTags.value;
+			if (text == "" || text == null)
+				return;
+			if (objDoc) {
+				objDoc.TagsText = text;
+				textNewTags.value = objDoc.TagsText;
+				listTags();
+			}
+		}
 		//
 		function tagToHtml(tagi) {		
 			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a></span>&nbsp;&nbsp;";
@@ -244,9 +268,9 @@
 			// 当前文档含有标签时，显示 checkbox 。
 			var objTags = objDoc.Tags;
 			if ( objTags.Count > 0){
-				var  html_check = "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkUnionset' onclick='ListDocsByTags()' />" + objApp.LoadStringFromFile(languangeFileName, "strUnionset") + " &nbsp;&nbsp;";
-	            html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkCurFolder' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languangeFileName, "strCurfolder") + " &nbsp;&nbsp;";
-				html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkFilelist' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languangeFileName, "strSendtoDoc") + " <br>";
+				var  html_check = "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkUnionset' onclick='ListDocsByTags()' />" + objApp.LoadStringFromFile(languageFileName, "strUnionset") + " &nbsp;&nbsp;";
+				html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkCurFolder' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languageFileName, "strCurfolder") + " &nbsp;&nbsp;";
+				html_check += "<input style='VERTICAL-ALIGN: middle' type='checkbox' id='checkFilelist' onclick='ShowDocList()' />" + objApp.LoadStringFromFile(languageFileName, "strSendtoDoc") + " <br>";
 				divCheckbox.innerHTML = html_check;
 				// divCheckbox.style.cssText="border-top-style:groove; border-bottom-style:groove; border-width:thin;";
 			}
@@ -287,18 +311,18 @@
 		}
 		// 点击标签，通过 tag guid 获得列出对应的文档
 		function ListDocsByTagGUID(guid) {
-            var aTag = document.getElementById(guid);
-            if ( aTag.isSelected == "0" ){
-                aTag.isSelected = "1";
-                aTag.style.cssText = "background:" + colorSelTags + ";";
-            }
-            else{
-                aTag.isSelected = "0";
-                aTag.style.cssText = "" ;
-            }
-            ListDocsByTags();
+			var aTag = document.getElementById(guid);
+			if ( aTag.isSelected == "0" ){
+				aTag.isSelected = "1";
+				aTag.style.cssText = "background:" + colorSelTags + ";";
+			}
+			else{
+				aTag.isSelected = "0";
+				aTag.style.cssText = "" ;
+			}
+			ListDocsByTags();
 		}
-        //
+		//
 		function ListDocsByTags() {
 			var objTags = objApp.CreateWizObject("WizKMCore.WizTagCollection");
 			var aTags = divTags.getElementsByTagName("a");
@@ -500,27 +524,27 @@
 			resetRate();
 		}
 		//
-        function changeDateFormate(objDate) {
-            var dt = new Date(objDate);
-            var strDay = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-            var strDateModified = dt.getYear() + "-" + sameStrLen(dt.getMonth()+1) + "-" + sameStrLen(dt.getDate()) + " " + strDay[dt.getDay()];
-            strDateModified += "  " + sameStrLen(dt.getHours()) + ":" + sameStrLen(dt.getMinutes()) + ":" + sameStrLen(dt.getSeconds());
-            return strDateModified;
-        }
-        function sameStrLen(DateTime){
-            var strDateTime = String(DateTime);
-            if (strDateTime.length<2){
-                strDateTime = "0" + strDateTime;
-            }
-            return strDateTime;
-        }
-        //
+		function changeDateFormate(objDate) {
+			var dt = new Date(objDate);
+			var strDay = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+			var strDateModified = dt.getYear() + "-" + sameStrLen(dt.getMonth()+1) + "-" + sameStrLen(dt.getDate()) + " " + strDay[dt.getDay()];
+			strDateModified += "  " + sameStrLen(dt.getHours()) + ":" + sameStrLen(dt.getMinutes()) + ":" + sameStrLen(dt.getSeconds());
+			return strDateModified;
+		}
+		function sameStrLen(DateTime){
+			var strDateTime = String(DateTime);
+			if (strDateTime.length<2){
+				strDateTime = "0" + strDateTime;
+			}
+			return strDateTime;
+		}
+		//
 		function AddInfoPage() {
 			ivalue_document_title.innerHTML = objDoc.Title;
 			textAuthor.value = objDoc.Author;
 			textKeywords.value = objDoc.Keywords;
 			ivalue_document_location.innerHTML = "<A href=javascript:GotoCurDocList();>" + objDoc.Location + "</A>";
-            ivalue_document_attachments.innerHTML = objDoc.Attachments.Count;
+			ivalue_document_attachments.innerHTML = objDoc.Attachments.Count;
 			ivalue_document_owner.innerHTML = objDoc.Owner;
 			ivalue_dt_created.innerHTML = changeDateFormate(objDoc.DateCreated);
 			ivalue_dt_modified.innerHTML = changeDateFormate(objDoc.DateModified);
@@ -530,82 +554,85 @@
 				ivalue_document_style.innerHTML = objDoc.Style.Name;
 			ivalue_document_readcount.innerHTML = objDoc.ReadCount;
 			textNewTags.value = objDoc.TagsText;
+			if (KMSettings("KMButtonsInMainMenu") != "1") {
+				trButtonToggles.style.display = "";
+			}
 		}
 		//
 		// 读取当前维基语法高亮, wiz助手高亮, 必须按下Alt触发Wizhelper 状态
-        function getFlags() {
-            if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") == "1")
-                chkKeyword.setAttribute("checked", "checked");
-            else
-                chkKeyword.setAttribute("checked", "");
-            //
-            if (objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") == "1") 
-                chkSmarttag.setAttribute("checked", "checked");
-            else
-                chkSmarttag.setAttribute("checked", "");
-            //
-            if (objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") == "1") 
-                chkAltkey.setAttribute("checked", "checked");
-            else
-                chkAltkey.setAttribute("checked", "");
-            //
-            if (objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") == "1") 
-                chkDictcn.setAttribute("checked", "checked");
-            else
-                chkDictcn.setAttribute("checked", "");
-        }
-        // 切换维基语法高亮状态
-        function setKEYWORD_FLAG() {
-            if (chkKeyword.checked) {
-                chkKeyword.setAttribute("checked", "checked");
-                objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "1";
-            }
-            else {
-                chkKeyword.setAttribute("checked", "");
-                objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "0";
-            }
-        }
-        // 切换wiz助手高亮状态
-        function setSMARTTAG_FLAG() {
-            if (chkSmarttag.checked) {
-                chkSmarttag.setAttribute("checked", "checked");
-                objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "1";
-            }
-            else {
-                chkSmarttag.setAttribute("checked", "");
-                objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "0";
-            }
-        }
-        // 切换是否按下Alt键才触发Wizhelper
-        function setALTKEY_FLAG() {
-            if (chkAltkey.checked) {
-                chkAltkey.setAttribute("checked", "checked");
-                objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "1";
-            }
-            else {
-                chkAltkey.setAttribute("checked", "");
-                objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";
-            }
-        }
-        // 切换是否开启海词在线
-        function setDICTCN_FLAG() {
-            if (chkDictcn.checked) {
-                chkDictcn.setAttribute("checked", "checked");
-                objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "1";
-            }
-            else {
-                chkDictcn.setAttribute("checked", "");
-                objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "0";
-            }
-        }
+		function getFlags() {
+			if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") == "1")
+				chkKeyword.setAttribute("checked", "checked");
+			else
+				chkKeyword.setAttribute("checked", "");
+			//
+			if (objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") == "1") 
+				chkSmarttag.setAttribute("checked", "checked");
+			else
+				chkSmarttag.setAttribute("checked", "");
+			//
+			if (objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") == "1") 
+				chkAltkey.setAttribute("checked", "checked");
+			else
+				chkAltkey.setAttribute("checked", "");
+			//
+			if (objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") == "1") 
+				chkDictcn.setAttribute("checked", "checked");
+			else
+				chkDictcn.setAttribute("checked", "");
+		}
+		// 切换维基语法高亮状态
+		function setKEYWORD_FLAG() {
+			if (chkKeyword.checked) {
+				chkKeyword.setAttribute("checked", "checked");
+				objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "1";
+			}
+			else {
+				chkKeyword.setAttribute("checked", "");
+				objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "0";
+			}
+		}
+		// 切换wiz助手高亮状态
+		function setSMARTTAG_FLAG() {
+			if (chkSmarttag.checked) {
+				chkSmarttag.setAttribute("checked", "checked");
+				objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "1";
+			}
+			else {
+				chkSmarttag.setAttribute("checked", "");
+				objDatabase.Meta("wizhelp_parm","SMARTTAG_FLAG") = "0";
+			}
+		}
+		// 切换是否按下Alt键才触发Wizhelper
+		function setALTKEY_FLAG() {
+			if (chkAltkey.checked) {
+				chkAltkey.setAttribute("checked", "checked");
+				objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "1";
+			}
+			else {
+				chkAltkey.setAttribute("checked", "");
+				objDatabase.Meta("wizhelp_parm","ALTKEY_FLAG") = "0";
+			}
+		}
+		// 切换是否开启海词在线
+		function setDICTCN_FLAG() {
+			if (chkDictcn.checked) {
+				chkDictcn.setAttribute("checked", "checked");
+				objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "1";
+			}
+			else {
+				chkDictcn.setAttribute("checked", "");
+				objDatabase.Meta("wizhelp_parm","DICTCN_FLAG") = "0";
+			}
+		}
 		//
 		function GotoCurDocList() {
-            objWindow.CategoryCtrl.SelectedFolder = objDoc.Parent;
-            setTimeout('objWindow.DocumentsCtrl.SelectedDocuments = objDoc;',500);
-            
-        }
-        //
-        objWindow.DocumentsCtrl.SelectedDocuments = objDoc;
+			objWindow.CategoryCtrl.SelectedFolder = objDoc.Parent;
+			setTimeout('objWindow.DocumentsCtrl.SelectedDocuments = objDoc;',500);
+			
+		}
+		//
+		objWindow.DocumentsCtrl.SelectedDocuments = objDoc;
 		//
 		function OpenCurURL() {
 			objWindow.ViewHtml(objDoc.URL, true);
@@ -623,7 +650,9 @@
 			AddInfoPage();
 			listTags();
 			listAttachments();
-			// getFlags();
+			if (KMSettings("KMButtonsInMainMenu") != "1") {
+				getFlags();
+			}
 		}
 		function Main() {
 			initPage();
