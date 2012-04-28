@@ -157,6 +157,7 @@ function RegKMButton() {
     var languageFileName = pluginPath + "plugin.ini";
     var buttonWizhelper = objApp.LoadStringFromFile(languageFileName, "buttonWizhelper"); //WIZ_HELPER
     var buttonNoteplus = objApp.LoadStringFromFile(languageFileName, "buttonNoteplus");
+    var buttonRecentDocs = objApp.LoadStringFromFile(languageFileName, "buttonRecentDocs");
     var buttonTagsCloud = objApp.LoadStringFromFile(languageFileName, "buttonTagsCloud");
     //
     if (objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") != "1") {objDatabase.Meta("wizhelp_parm","KEYWORD_FLAG") = "0";}
@@ -171,6 +172,7 @@ function RegKMButton() {
     objWindow.AddToolButton("document", "KMHelperButton", buttonWizhelper, "", "OnKMHelperButtonClicked");
     objWindow.AddToolButton("document", "KMNoteplusButton", buttonNoteplus, "", "OnNotetakingButtonClicked");
     objWindow.AddToolButton("main", "KMTagsCloudButton", buttonTagsCloud, "", "OnKMTagsCloudButtonClicked");
+    objWindow.AddToolButton("main", "KMRecentDocsButton", buttonRecentDocs, "", "OnKMRecentDocsButtonClicked");
     if (KMSettings("KMButtonsInMainMenu") == "1") {
         objWindow.AddToolButton("main", "KMSyntaxButton", buttonSyntax, "", "OnKMSyntaxStatusButtonClicked");
         objWindow.AddToolButton("main", "KMHelperButton", buttonHelper, "", "OnKMHelperStatusButtonClicked");
@@ -209,6 +211,15 @@ function OnKMHelperExButtonClicked() {
         // left,top,right,bottom
         objWindow.ShowSelectorWindow(helperFileName, arr[0], arr[3], 300, 500, "");
     }
+}
+
+function OnKMRecentDocsButtonClicked() {
+    var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js");
+    var recentFileName = pluginPath + "KMRecentDocs.htm";
+    //
+    var rect = objWindow.GetToolButtonRect("main", "KMRecentDocsButton");
+    var arr = rect.split(',');
+    objWindow.ShowSelectorWindow(recentFileName, arr[0], arr[3], 350, 510, "");
 }
 
 function OnKMTagsCloudButtonClicked() {

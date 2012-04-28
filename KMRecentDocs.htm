@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>RecentList</title>
+	<link rel="stylesheet" type="text/css" href="base_style.css"/> 
+	<style type="text/css">
+		body
+		{
+		    font-family: Arial, Helvetica, Sans-serif;
+		    color: black;
+		    background-color: #fff;
+		    font-size: 10pt;
+		    margin: 0px;
+		    padding: 5px;
+		    line-height: 1.5;
+		}
+		fieldset
+		{
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<fieldset>
+		<legend id='strRecentDocs'>Recent files</legend>
+		<div id="RecentDocList"></div>
+	</fieldset>
+	<fieldset>
+		<legend id='strMostUsedDocs'>Most used files</legend>
+		<div id="FavoriteDocList"></div>
+	</fieldset>
+	<script language="javascript" type="text/javascript">
+		var nListDocs = 10;
+		var objApp = window.external; //WizExplorerApp
+		var pluginPath = objApp.GetPluginPathByScriptFileName("KMHelper.js"); //获得插件的路径
+		var languageFileName = pluginPath + "plugin.ini";  //语言文件
+		objApp.LocalizeHtmlDocument(languageFileName, document);
+		//
+		var objDatabase = objApp.Database;
+		var objDocs = objDatabase.GetAllDocuments();
+		var listDoc = [];
+		for (var i=0; i<objDocs.Count; i++){
+			var doci = objDocs.Item(i);
+			var dataDoc = {
+				"Name" : doci.Name,
+				"GUID"  : doci.GUID,
+				"DateAccessed" : doci.DateAccessed,
+				"ReadCount"    : doci.ReadCount
+			};
+			listDoc.push(dataDoc);
+		}
+		//将文件按照访问时间排序
+		function CompareDocDateAccessed(a, b) {
+			if (a.DateAccessed < b.DateAccessed)
+				return 1;
+			else
+				return -1;
+		}
+		//将文件按照访问次数排序
+		function CompareDocReadCount(a, b) {
+			if (a.ReadCount < b.ReadCount)
+				return 1;
+			else
+				return -1;
+		}
+		//
+		function getHTML(isReadCount) {
+			var strHTML = "";
+			if (isReadCount == 1)
+				listDoc.sort(CompareDocReadCount);
+			else
+				listDoc.sort(CompareDocDateAccessed);
+			for (var i=0; i<nListDocs; i++){
+				var GUID = listDoc[i].GUID;
+				var NAME = StringLessThanN(listDoc[i].Name.replace(".ziw",""),44);
+				strHTML += "<span> - <A style='text-decoration: none;' href=\"wiz:open_document?guid=" + GUID + "\" onclick=\'openDoc(\"" + GUID + "\"," + 0 + ")\'>" + NAME + "</a></span><br/>";
+			}
+			return strHTML;
+		}
+		//
+		function openDoc(GUID, inNewTab) {
+			objApp.window.ViewDocument(objDatabase.DocumentFromGUID(GUID), inNewTab);
+		}
+		//
+		function StringLessThanN(str,N) {
+			if ( getBytesLength(str)>N ) { return subStringByBytes(str,N) + "...";}
+			else {return str;}
+		}
+		function subStringByBytes(str, maxBytesLen) {
+			var len = maxBytesLen;
+			var result = str.slice(0, len);
+			while (getBytesLength(result) > maxBytesLen) {
+				result = result.slice(0, --len);
+			}
+			return result;
+		}
+		function getBytesLength(str) {
+			// 在GBK编码里，除了ASCII字符，其它都占两个字符宽
+			return str.replace(/[^\x00-\xff]/g, 'xx').length;
+		}
+		//
+		RecentDocList.innerHTML = getHTML(0);
+		FavoriteDocList.innerHTML = getHTML(1);
+	</script>
+</body>
+</html>
+

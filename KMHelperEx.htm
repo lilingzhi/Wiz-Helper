@@ -1,8 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Wizhelper Document Information</title>
-<link rel="stylesheet" type="text/css" href="base_style.css"/> 
+	<title>Wizhelper Document Information</title>
+	<link rel="stylesheet" type="text/css" href="base_style.css"/> 
+	<link rel="stylesheet" type="text/css" href="js/jquery.autocomplete.css"/>
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 </head>
 <body>
 	<table cellspacing="0px" sytle="width:100%;" id="trButtonToggles" style="display:none;" margin=10px;>
@@ -212,24 +215,26 @@
 		//
 		function textNewTags_onEnterPress(e) {
 			var e = e || window.event;
-			if (e.keyCode == 13) {
+			if (e.keyCode == 13 || e.keyCode == 186) {
 				textNewTags_onblur();
 			}
 		}
 		//
 		function textNewTags_onblur() {
 			var text = textNewTags.value;
-			if (text == "" || text == null)
+			var strDocTags = objDoc.TagsText;
+			if (text=="" || text==null || strDocTags.indexOf(text)!=-1)
 				return;
 			if (objDoc) {
-				objDoc.TagsText = text;
-				textNewTags.value = objDoc.TagsText;
+				objDoc.TagsText = strDocTags + ";" + text;
 				listTags();
+				textNewTags.focus();
+				textNewTags.value="";
 			}
 		}
 		//
 		function tagToHtml(tagi) {		
-			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a></span>&nbsp;&nbsp;";
+			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a>&nbsp;<a href=javascript:DeleteTagByGUID('"+tagi.GUID+"');>X</a>&nbsp;&nbsp;|&nbsp;&nbsp;</span>";
 		}
 		function docToHtml(doci) {
 			return "<span> - <A style='text-decoration: none;' href=javascript:OpenDocumentByGUID('" + doci.GUID + "');>" + StringLessThanN(doci.Name,40) + "</A></span><br/>";
@@ -367,7 +372,12 @@
 			listDocs = documents;
 			ShowDocList();
 		}
-		//
+		// 删除标签
+		function DeleteTagByGUID(guid) {
+			var objTag = objDatabase.TagFromGUID(guid);
+			objDoc.RemoveTag(objTag);
+			listTags();
+		}		//
 		// 列出筛选出的文档列表
 		function ShowDocList(){
 			// 列出筛选出的文档列表
@@ -553,7 +563,6 @@
 			if (objDoc.Style)
 				ivalue_document_style.innerHTML = objDoc.Style.Name;
 			ivalue_document_readcount.innerHTML = objDoc.ReadCount;
-			textNewTags.value = objDoc.TagsText;
 			if (KMSettings("KMButtonsInMainMenu") != "1") {
 				trButtonToggles.style.display = "";
 			}
@@ -654,8 +663,28 @@
 				getFlags();
 			}
 		}
+		//
 		function Main() {
 			initPage();
 		}
 		Main();
+		//
+        $(function() {
+            var availableTags = [];
+        	var objTags = objDatabase.Tags;
+        	for (var i = 0; i < objTags.Count; i++) {
+        		availableTags.push(objTags.Item(i).Name);
+        	} 
+            // $("#textNewTags").autocomplete({
+            //     source: availableTags,
+            //     multiple: true,
+            //     multipleSeparator: ';'
+                
+            // });
+            $("#textNewTags").autocomplete(availableTags, {
+                multiple: true,
+                mustMatch: true,
+                autoFill: true
+            });
+        });
 </script>
