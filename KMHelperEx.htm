@@ -102,8 +102,8 @@
 				<label id="strTags">Tags</label> :
 			</td>
 			<td style="border-top-style:solid; border-width:thin;">
-				<input id="textNewTags" type="text" style="width: 200px;" onblur="return textNewTags_onblur()" onkeypress="textNewTags_onEnterPress()" onkeydown="textNewTags_onEnterPress()" />
 				<div id="divTags" style="width:100%;"></div>
+				<input id="textNewTags" type="text" style="width: 200px;" onblur="return textNewTags_onblur()" onkeypress="textNewTags_onEnterPress()" onkeydown="textNewTags_onEnterPress()" />
 			</td>
 		</tr>
 		<tr>
@@ -234,7 +234,7 @@
 		}
 		//
 		function tagToHtml(tagi) {		
-			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a>&nbsp;<a href=javascript:DeleteTagByGUID('"+tagi.GUID+"');>X</a>&nbsp;&nbsp;|&nbsp;&nbsp;</span>";
+			return "<span style='display:inline-block;'><a isSelected=0 id='" + tagi.GUID + "' href=javascript:ListDocsByTagGUID('" + tagi.GUID + "');>" + tagi.tag.Name + " (" + tagi.count + ")</a>&nbsp;<a href=javascript:DeleteTagByGUID('"+tagi.GUID+"');>X</a>&nbsp;&nbsp;&nbsp;</span>";
 		}
 		function docToHtml(doci) {
 			return "<span> - <A style='text-decoration: none;' href=javascript:OpenDocumentByGUID('" + doci.GUID + "');>" + StringLessThanN(doci.Name,40) + "</A></span><br/>";
@@ -414,9 +414,12 @@
 				var doci = listDocs_plt.Item(i);
 				html_files += docToHtml(doci);
 			}
-			divFiles.innerHTML = html_files;
 			if (checkFilelist.checked){
 				objApp.Window.DocumentsCtrl.SetDocuments(listDocs_plt);
+				divFiles.innerHTML = "";
+			}
+			else{
+				divFiles.innerHTML = html_files;
 			}
 			divStatus.innerHTML = listDocs_plt.Count + " files are matching!"
 		}
@@ -662,6 +665,8 @@
 			if (KMSettings("KMButtonsInMainMenu") != "1") {
 				getFlags();
 			}
+			checkFilelist.setAttribute("checked", "checked");
+			textNewTags.focus();
 		}
 		//
 		function Main() {
@@ -679,11 +684,10 @@
             //     source: availableTags,
             //     multiple: true,
             //     multipleSeparator: ';'
-                
             // });
             $("#textNewTags").autocomplete(availableTags, {
                 multiple: true,
-                mustMatch: true,
+                mustMatch: false,
                 autoFill: true
             });
         });
